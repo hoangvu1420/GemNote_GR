@@ -9,6 +9,8 @@ public class RootController : ControllerBase
 	[HttpGet]
 	public ActionResult<string> Get()
 	{
-		return Ok("Welcome to GemNote API!\nRefer to the API documentation in the link below:");
+		var message = @"Welcome to GemNote API!
+Refer to the API documentation in the link below:";
+		return Ok(message);
 	}
 }
