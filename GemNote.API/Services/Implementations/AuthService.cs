@@ -32,6 +32,7 @@ public class AuthService(
 			};
 		}
 
+		var language = string.IsNullOrWhiteSpace(request.Language) ? "en" : request.Language;
 		var avatarUrl = string.IsNullOrWhiteSpace(request.AvatarUrl) ? PictureStock.GetRandomPicture() : request.AvatarUrl;
 		var newUser = new AppUser
 		{
@@ -39,7 +40,7 @@ public class AuthService(
 			Email = request.Email,
 			FirstName = request.FirstName,
 			LastName = request.LastName,
-			Language = request.Language,
+			Language = language,
 			AvatarUrl = avatarUrl
 		};
 
