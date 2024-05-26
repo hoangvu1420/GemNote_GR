@@ -17,7 +17,7 @@ public class Notebook : BaseEntity
 	[ForeignKey(nameof(Category))]
 	public int CategoryId { get; set; }
 	[Required]
-	public Category Category { get; set; }
+	public Category? Category { get; set; }
 
 	[ForeignKey(nameof(AppUser))]
 	public string AppUserId { get; set; }
