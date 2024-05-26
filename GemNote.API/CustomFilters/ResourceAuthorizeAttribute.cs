@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace PetCareSystem.CustomFilters;
+namespace GemNote.API.CustomFilters;
 
 public class ResourceAuthorizeAttribute(Type resourceType)
 	: TypeFilterAttribute(typeof(ResourceAuthorizationFilter<>).MakeGenericType(resourceType));

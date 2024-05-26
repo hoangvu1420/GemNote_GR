@@ -35,7 +35,22 @@ public class ResourceAuthorizationFilter<T>(
 	{
 		var routeValues = context.RouteData.Values;
 
-		if (routeValues.TryGetValue("sectionId", out var sectionIdValue))
+		if (routeValues.TryGetValue("unitId", out var unitIdValue))
+		{
+			var unitId = int.Parse(unitIdValue.ToString());
+			var unit = await repository.GetAsync(filter: u => (u as Unit)!.Id == unitId, includeProperties: "Section");
+			var section = await repository.GetAsync(filter: s => (s as Section)!.Id == (unit as Unit)!.SectionId, includeProperties: "Notebook");
+
+			if (unit == null || section == null)
+			{
+				return; // return without raising an error, the controller will handle the 404 response
+			}
+			if ((section as Section)!.Notebook.AppUserId != userId)
+			{
+				context.Result = new ForbidResult();
+			}
+		}
+		else if (routeValues.TryGetValue("sectionId", out var sectionIdValue))
 		{
 			var sectionId = int.Parse(sectionIdValue.ToString());
 			var section = await repository.GetAsync(filter: s => (s as Section)!.Id == sectionId, includeProperties: "Notebook");
