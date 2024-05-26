@@ -1,11 +1,15 @@
 ﻿using System.Text;
 using GemNote.API.Infrastructure.DataContext;
 using GemNote.API.Models;
+using GemNote.API.Repositories.Contracts;
+using GemNote.API.Services.Contracts;
+using GemNote.API.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PetCareSystem.Repositories.Implementations;
 
 namespace GemNote.API.Extensions;
 
@@ -61,7 +65,7 @@ public static class ServiceCollectionExtensions
 				ValidateIssuerSigningKey = true,
 				ValidIssuer = configuration["Jwt:Issuer"],
 				ValidAudience = configuration["Jwt:Audience"],
-				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]))
 			};
 		});
 	}
@@ -116,10 +120,14 @@ public static class ServiceCollectionExtensions
 	{
 		services.AddControllers();
 		services.AddEndpointsApiExplorer();
+
+		// Add services
+		services.AddScoped<IAuthService, AuthService>();
 	}
 
 	public static void AddRepositories(this IServiceCollection services)
 	{
-
+		// Add repositories
+		services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 	}
 }
