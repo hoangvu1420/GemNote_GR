@@ -13,6 +13,7 @@ public class GemNoteDbContext(DbContextOptions<GemNoteDbContext> options) : Iden
 	public DbSet<Unit> Units { get; set; }
 	public DbSet<Flashcard> Flashcards { get; set; }
 	public DbSet<CardReviewSession> CardReviewSessions { get; set; }
+	public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
