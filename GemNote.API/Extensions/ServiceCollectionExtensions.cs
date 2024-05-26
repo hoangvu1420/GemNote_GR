@@ -2,6 +2,7 @@
 using GemNote.API.Infrastructure.DataContext;
 using GemNote.API.Models;
 using GemNote.API.Repositories.Contracts;
+using GemNote.API.Repositories.Implementations;
 using GemNote.API.Services.Contracts;
 using GemNote.API.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -121,14 +122,20 @@ public static class ServiceCollectionExtensions
 		services.AddControllers();
 		services.AddEndpointsApiExplorer();
 
+		services.AddAutoMapper(typeof(ServiceCollectionExtensions).Assembly);
+
 		// Add services
 		services.AddScoped<ISeeder, Seeder>();
 		services.AddScoped<IAuthService, AuthService>();
+		services.AddScoped<INotebookService, NotebookService>();
 	}
 
 	public static void AddRepositories(this IServiceCollection services)
 	{
 		// Add repositories
+		services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 		services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+		services.AddScoped<INotebookRepository, NotebookRepository>();
+		services.AddScoped<ICategoryRepository, CategoryRepository>();
 	}
 }
