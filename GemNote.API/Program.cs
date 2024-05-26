@@ -1,4 +1,5 @@
 using GemNote.API.Extensions;
+using GemNote.API.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,18 @@ builder.Services.AddSwagger();
 builder.Services.AddCorsConfig();
 
 var app = builder.Build();
+
+#region Seeding data
+
+var scope = app.Services.CreateScope();
+var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
+
+await seeder.SeedRolesAsync();
+await seeder.SeedUsersAsync();
+await seeder.SeedCategoriesAsync();
+await seeder.SeedNotebookAsync();
+
+#endregion
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

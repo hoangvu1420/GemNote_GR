@@ -122,6 +122,7 @@ public static class ServiceCollectionExtensions
 		services.AddEndpointsApiExplorer();
 
 		// Add services
+		services.AddScoped<ISeeder, Seeder>();
 		services.AddScoped<IAuthService, AuthService>();
 	}
 

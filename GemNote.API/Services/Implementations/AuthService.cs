@@ -55,12 +55,6 @@ public class AuthService(
 			};
 		}
 
-		if (await userManager.Users.CountAsync() == 1)
-		{
-			await SeedRoles();
-			await userManager.AddToRoleAsync(newUser, UserRoles.Admin);
-		}
-
 		await userManager.AddToRoleAsync(newUser, UserRoles.User);
 
 		return new AuthResponse
@@ -276,19 +270,6 @@ public class AuthService(
 			IsSucceed = true,
 			Message = $"User is added to {request.Role} role successfully"
 		};
-	}
-
-	private async Task SeedRoles()
-	{
-		var roles = new List<string>
-		{
-			UserRoles.Admin, UserRoles.User
-		};
-		foreach (var role in roles)
-		{
-			if (await roleManager.RoleExistsAsync(role)) continue;
-			await roleManager.CreateAsync(new IdentityRole(role));
-		}
 	}
 }
 
