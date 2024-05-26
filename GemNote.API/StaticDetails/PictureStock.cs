@@ -1,6 +1,6 @@
 ﻿namespace GemNote.API.StaticDetails;
 
-public class PictureStock
+public static class PictureStock
 {
 	public static List<string> Pictures =
 	[
