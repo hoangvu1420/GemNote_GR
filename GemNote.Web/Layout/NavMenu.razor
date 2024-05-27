@@ -4,7 +4,12 @@
 		<FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill"/>
 	</label>
 	<nav class="sitenav" aria-labelledby="main-menu" onclick="document.getElementById('navmenu-toggle').click();">
-		<FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded">
+		<FluentNavMenu 
+			Id="main-menu" 
+			Width="200" 
+			Collapsible="true" 
+			Title="Navigation menu" 
+			@bind-Expanded="expanded">
 			<FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">
 				Home
 			</FluentNavLink>
@@ -14,7 +19,8 @@
 			<FluentNavLink Href="weather" Icon="@(new Icons.Regular.Size20.WeatherPartlyCloudyDay())" IconColor="Color.Accent">
 				Weather
 			</FluentNavLink>
-			<FluentNavLink Href="register" Icon="@(new Icons.Filled.Size20.PlugConnectedSettings())" IconColor="Color.Accent">
+			
+			<FluentNavLink Href="register" Icon="@(new Icons.Regular.Size20.FormNew())" IconColor="Color.Accent">
 				Register
 			</FluentNavLink>
 		</FluentNavMenu>
@@ -22,5 +28,5 @@
 </div>
 
 @code {
-	private bool expanded = true;
+	private bool expanded = false;
 }

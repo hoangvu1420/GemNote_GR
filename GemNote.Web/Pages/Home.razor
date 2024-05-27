@@ -1,38 +1,90 @@
 ﻿@page "/"
-@using Microsoft.FluentUI.AspNetCore.Components.Extensions
 @using GemNote.Web.ViewModels
 
 @inject IToastService ToastService
 @inject NavigationManager NavigationManager
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Basic Form FluentUI</PageTitle>
 
-<FluentLabel Typo="Typography.H1">Hello, world!</FluentLabel>
+<h1>Starfleet Starship Database</h1>
 
-<FluentAutocomplete TOption="Country"
-                    AutoComplete="off"
-                    Autofocus="true"
-                    Label="Select a country"
-                    Width="250px"
-                    Placeholder="Select countries"
-                    OnOptionsSearch="@OnSearchAsync"
-                    OptionDisabled="@(e => e.Code == "au")"
-                    MaximumSelectedOptions="5"
-                    OptionText="@(item => item.Name)"
-                    @bind-SelectedOptions="@SelectedItems" />
+<h2>New Ship Entry Form</h2>
 
-<p>
-	<b>Selected</b>: @(String.Join(" - ", SelectedItems.Select(i => i.Name)))
-</p>
+<EditForm Model="@Starship" OnValidSubmit="@HandleValidSubmit" FormName="starship_fluent_entry" novalidate>
+    <DataAnnotationsValidator />
+    <FluentValidationSummary />
 
-@code
-{
-	IEnumerable<Country> SelectedItems = Array.Empty<Country>();
+    <FluentStack Orientation="Orientation.Vertical">
+        <div>
+            <FluentTextField Name="identifier" @bind-Value="Starship.Identifier" Label="Identifier" Required />
+            <FluentValidationMessage For="@(() => Starship.Identifier)" />
+        </div>
+        <div>
+            <FluentTextArea Name="description" Rows=5 Cols=60 @bind-Value="Starship.Description" Label="Description (optional)" />
+        </div>
+        <div>
+            <FluentAutocomplete TOption="Country"
+                                AutoComplete="off"
+                                Label="Select a country"
+                                Width="250px"
+                                Placeholder="Select countries"
+                                OnOptionsSearch="@OnSearchAsync"
+                                MaximumSelectedOptions="3"
+                                OptionText="@(item => item.Name)"
+                                @bind-SelectedOptions="@_selectedItems" />
+        </div>
+        <div>
+            <FluentSelect name="class" Id="classification" @bind-Value="Starship.Classification" TOption="string" Required Label="Primary Classification">
+                <FluentOption Value="">Select classification ...</FluentOption>
+                <FluentOption Value="Exploration">Exploration</FluentOption>
+                <FluentOption Value="Diplomacy">Diplomacy</FluentOption>
+                <FluentOption Value="Defense">Defense</FluentOption>
+            </FluentSelect>
+            <FluentValidationMessage For="@(() => Starship.Classification)" />
+        </div>
+        <div>
+            <FluentNumberField Name="accomodation" @bind-Value="Starship.MaximumAccommodation" Label="Maximum Accommodation" Required />
+            <FluentValidationMessage For="@(() => Starship.MaximumAccommodation)" />
+        </div>
+        <div>
+            <FluentCheckbox Name="approved" @bind-Value="Starship.IsValidatedDesign" Required Label="Engineering approval" />
+            <FluentValidationMessage For="@(() => Starship.IsValidatedDesign)" />
+        </div>
+        <div>
+            <FluentDatePicker Name="production_date" Id="proddate" @bind-Value="Starship.ProductionDate" Label="Production Date" Required />
+            <FluentValidationMessage For="@(() => Starship.ProductionDate)" />
+        </div>
+        <div>
+            <FluentSwitch Name="teleporter" @bind-value="Starship.HasTeleporter" Label="Teleporter" CheckedMessage="Fully operational" UncheckedMessage="Under maintenance" />
+            <FluentValidationMessage For="@(() => Starship.HasTeleporter)" />
+        </div>
+        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Submit</FluentButton>
+    </FluentStack>
+</EditForm>
 
-	private async Task OnSearchAsync(OptionsSearchEventArgs<Country> e)
-	{
-		var allCountries = Country.All;
-		e.Items = allCountries.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
-			.OrderBy(i => i.Name);
-	}
+@code {
+    protected override void OnInitialized()
+    {
+        Starship.ProductionDate = DateTime.Now;
+    }
+
+    IEnumerable<Country> _selectedItems = Array.Empty<Country>();
+
+    private async Task OnSearchAsync(OptionsSearchEventArgs<Country> e)
+    {
+	    e.Items = Country.All.Where(c => c.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+		    .OrderBy(c => c.Name).ToList();
+	    ToastService.ShowInfo("Searching for countries...");
+	    await Task.CompletedTask;
+    }
+
+    [SupplyParameterFromForm]
+    private Starship Starship { get; set; } = new();
+
+    private void HandleValidSubmit()
+    {
+        ToastService.ShowSuccess("Form submitted successfully!");
+
+        // Process the valid form
+    }
 }

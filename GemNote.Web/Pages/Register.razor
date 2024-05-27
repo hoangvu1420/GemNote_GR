@@ -1,90 +1,110 @@
 ﻿@page "/register"
 @using GemNote.Web.ViewModels
+@using System.ComponentModel.DataAnnotations
+@using System.Globalization
 @inject IDialogService DialogService
 @inject IToastService ToastService
 
-
 <PageTitle>New user</PageTitle>
 
-<FluentLabel Typo="Typography.PageTitle">Register</FluentLabel>
 
-<FluentCard Style="margin: 16px 0; padding: 16px; width: 600px; height: 700px">
-	<FluentLabel Style="margin-bottom: 1rem">
-		Let's get you all set up!
-	</FluentLabel>
+<div style="width: 80%; margin: auto;">
 
-	<EditForm Model="@Data" OnValidSubmit="ValidHandlerAsync">
-		<FluentTextField
-			Label="First name: "
-			@bind-Value="@Data.FirstName"
-			Style="width: 100%"
-			Placeholder="Bobby"
-			Required/>
-		<FluentTextField
-			Label="Last name"
-			@bind-Value="@Data.LastName"
-			Style="width: 100%"
-			Placeholder="Fischer"
-			Required="true"/>
-		<FluentDatePicker
-			Label="Date of birth"
-			@bind-Value="@Data.DateOfBirth"
-			Style="width: 100%"
-			Required="true"/>
+	<FluentLabel Typo="Typography.PageTitle">Sign up</FluentLabel>
 
-		<FluentAutocomplete
-			TOption="Country"
-			Label="Select a country"
-			Width="100%"
-			Placeholder="The US"
-			OnOptionsSearch="@OnSearchAsync"
-			MaximumSelectedOptions="1"
-			OptionText="@(i => i.Name)"
-			@bind-SelectedOptions="@Data.Languages">
+	<FluentCard 
+		AreaRestricted="false"
+		Style="margin: 20px 0; padding: 16px; width: 400px; height: auto;">
+		<FluentLabel Style="margin-bottom: 1rem">
+			Let's get you all set up!
+		</FluentLabel>
 
-			<OptionTemplate Context="language">
-				@language.HtmlFlagAndName
-			</OptionTemplate>
-			<MaximumSelectedOptionsMessage>
-				You can only select one country.
-			</MaximumSelectedOptionsMessage>
-		</FluentAutocomplete>
+		<EditForm Model="@User" OnValidSubmit="ValidHandlerAsync">
 
-		<FluentStack>
-			<FluentButton Appearance="Appearance.Accent" @onclick="ValidHandlerAsync">Register</FluentButton>
-		</FluentStack>
-	</EditForm>
-</FluentCard>
+			<FluentTextField
+				Label="Email"
+				@bind-Value="@User.Email"
+				Style="width: 100%"
+				TextFieldType="TextFieldType.Email"
+				Placeholder="john.doe@example.com"
+				Required="true"
+				Spellcheck="true"/>
+			
+			<FluentTextField
+				Label="Password"
+				Style="width: 100%"
+				TextFieldType="TextFieldType.Password" 
+				Placeholder="*******"
+				Required="true"/>
+
+			<FluentTextField
+				Label="First name"
+				@bind-Value="@User.FirstName"
+				Style="width: 100%"
+				Placeholder="John"
+				Required/>
+
+			<FluentTextField
+				Label="Last name"
+				@bind-Value="@User.LastName"
+				Style="width: 100%"
+				Placeholder="Doe"
+				Required="true"/>
+
+			<FluentSelect
+				TOption="Country"
+				Items="Countries"
+				Label="Select your language"
+				Width="100%"
+				Height="200px"
+				OptionValue="@(c => c.Code)"
+				OptionText="@(c => c.Name)"
+				@bind-value="@User.Language"
+				@bind-SelectedOption="@Country">
+			</FluentSelect>
+
+			<FluentSpacer/>
+
+			<FluentStack>
+				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="margin-top: 1rem;">Sign up</FluentButton>
+			</FluentStack>
+		</EditForm>
+	</FluentCard>
+</div>
 
 @code {
-	private bool _loading = false;
-	private RegisterUser Data { get; set; } = new();
-	private bool _acceptToCreate = false;
+	private RegisterUser User { get; set; } = new();
+	private IEnumerable<Country> Countries { get; set; } = Country.All;
+	private Country Country { get; set; } = null;
 
 	private async Task ValidHandlerAsync()
 	{
-		_loading = true;
-		await Task.Delay(2000);
-		_loading = false;
+		await Task.Delay(1000);
 		await DialogService.ShowSuccessAsync("Registration successful", "Success");
-		// ToastService.ShowSuccess("Registration successful");
-	}
-
-	private async Task OnSearchAsync(OptionsSearchEventArgs<Country> e)
-	{
-		e.Items = Country.All.Where(c => c.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
-			.OrderBy(c => c.Name).ToList();
-		ToastService.ShowInfo("Searching for countries...");
-		await Task.CompletedTask;
+		ToastService.ShowSuccess($"User's language: {User.Language}");
 	}
 
 	public class RegisterUser
 	{
-		public string? FirstName { get; set; }
-		public string? LastName { get; set; }
-		public DateTime? DateOfBirth { get; set; }
+		[Required]
+		[EmailAddress(ErrorMessage = "Email is not valid.")]
 		public string? Email { get; set; }
-		public IEnumerable<Country> Languages { get; set; } = Array.Empty<Country>();
+
+		[Required]
+		[MinLength(8, ErrorMessage = "Password has to be at least 8 characters long.")]
+		public string? Password { get; set; }
+
+		[Required]
+		[MinLength(3, ErrorMessage = "First name is too short!")]
+		[StringLength(16, ErrorMessage = "First name too long (16 character limit).")]
+		public string? FirstName { get; set; }
+
+		[Required]
+		[MinLength(3, ErrorMessage = "Last name is too short!")]
+		[StringLength(16, ErrorMessage = "Last name too long (16 character limit).")]
+		public string? LastName { get; set; }
+
+		public string? Language { get; set; }
 	}
 
 }
