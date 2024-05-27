@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GemNote.API", "GemNote.API\GemNote.API.csproj", "{DE8C8C3A-DBBB-4FDF-9365-FFF1B11D811F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GemNote.API", "GemNote.API\GemNote.API.csproj", "{DE8C8C3A-DBBB-4FDF-9365-FFF1B11D811F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GemNote.Web", "GemNote.Web\GemNote.Web.csproj", "{1CA61737-A2AC-47BE-8E4D-3FC27B04DDE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GemNote.Web", "GemNote.Web\GemNote.Web.csproj", "{3F6FB78F-103F-4E59-B1A8-9917389CFD4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{DE8C8C3A-DBBB-4FDF-9365-FFF1B11D811F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE8C8C3A-DBBB-4FDF-9365-FFF1B11D811F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE8C8C3A-DBBB-4FDF-9365-FFF1B11D811F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1CA61737-A2AC-47BE-8E4D-3FC27B04DDE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1CA61737-A2AC-47BE-8E4D-3FC27B04DDE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1CA61737-A2AC-47BE-8E4D-3FC27B04DDE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1CA61737-A2AC-47BE-8E4D-3FC27B04DDE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F6FB78F-103F-4E59-B1A8-9917389CFD4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F6FB78F-103F-4E59-B1A8-9917389CFD4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F6FB78F-103F-4E59-B1A8-9917389CFD4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F6FB78F-103F-4E59-B1A8-9917389CFD4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

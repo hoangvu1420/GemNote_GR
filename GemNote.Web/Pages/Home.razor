@@ -1,7 +1,38 @@
 ﻿@page "/"
+@using Microsoft.FluentUI.AspNetCore.Components.Extensions
+@using GemNote.Web.ViewModels
+
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<FluentLabel Typo="Typography.H1">Hello, world!</FluentLabel>
 
-Welcome to your new app.
+<FluentAutocomplete TOption="Country"
+                    AutoComplete="off"
+                    Autofocus="true"
+                    Label="Select a country"
+                    Width="250px"
+                    Placeholder="Select countries"
+                    OnOptionsSearch="@OnSearchAsync"
+                    OptionDisabled="@(e => e.Code == "au")"
+                    MaximumSelectedOptions="5"
+                    OptionText="@(item => item.Name)"
+                    @bind-SelectedOptions="@SelectedItems" />
+
+<p>
+	<b>Selected</b>: @(String.Join(" - ", SelectedItems.Select(i => i.Name)))
+</p>
+
+@code
+{
+	IEnumerable<Country> SelectedItems = Array.Empty<Country>();
+
+	private async Task OnSearchAsync(OptionsSearchEventArgs<Country> e)
+	{
+		var allCountries = Country.All;
+		e.Items = allCountries.Where(i => i.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+			.OrderBy(i => i.Name);
+	}
+}

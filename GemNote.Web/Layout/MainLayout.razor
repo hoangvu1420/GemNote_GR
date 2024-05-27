@@ -1,16 +1,39 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+﻿@using System.Runtime.InteropServices
+@inherits LayoutComponentBase
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+<FluentLayout>
+	<FluentHeader>
+		GemNote
+	</FluentHeader>
+	<FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
+		<NavMenu />
+		<FluentBodyContent Class="body-content">
+			<ErrorBoundary>
+				<ChildContent>
+					<div class="content">
+						@Body
+					</div>
+				</ChildContent>
+				<ErrorContent Context="ex">
+					<div class="blazor-error-boundary">@ex.Message</div>
+				</ErrorContent>
+			</ErrorBoundary>
+			
+			<FluentToastProvider MaxToastCount="10" />
+			<FluentDialogProvider />
+			<FluentTooltipProvider />
+			<FluentKeyCodeProvider />
+		</FluentBodyContent>
+	</FluentStack>
+	<FluentFooter Style="@("height: 40px; color: white;  font-size: var(--type-ramp-minus-1-font-size); line-height: var(--type-ramp-base-line-height);")">
+		<div class="version">
+			HNV - GemNote
+			&nbsp;-&nbsp;
+			<a href="https://dotnet.microsoft.com/en-us/learn/aspnet/what-is-aspnet-core">Powered by @RuntimeInformation.FrameworkDescription</a>
+		</div>
+		<FluentSpacer />
+		<div class="copy">
+			May 2024
+		</div>
+	</FluentFooter>
+</FluentLayout>

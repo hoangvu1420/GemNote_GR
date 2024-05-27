@@ -1,0 +1,90 @@
+﻿@page "/register"
+@using GemNote.Web.ViewModels
+@inject IDialogService DialogService
+@inject IToastService ToastService
+
+
+<PageTitle>New user</PageTitle>
+
+<FluentLabel Typo="Typography.PageTitle">Register</FluentLabel>
+
+<FluentCard Style="margin: 16px 0; padding: 16px; width: 600px; height: 700px">
+	<FluentLabel Style="margin-bottom: 1rem">
+		Let's get you all set up!
+	</FluentLabel>
+
+	<EditForm Model="@Data" OnValidSubmit="ValidHandlerAsync">
+		<FluentTextField
+			Label="First name: "
+			@bind-Value="@Data.FirstName"
+			Style="width: 100%"
+			Placeholder="Bobby"
+			Required/>
+		<FluentTextField
+			Label="Last name"
+			@bind-Value="@Data.LastName"
+			Style="width: 100%"
+			Placeholder="Fischer"
+			Required="true"/>
+		<FluentDatePicker
+			Label="Date of birth"
+			@bind-Value="@Data.DateOfBirth"
+			Style="width: 100%"
+			Required="true"/>
+
+		<FluentAutocomplete
+			TOption="Country"
+			Label="Select a country"
+			Width="100%"
+			Placeholder="The US"
+			OnOptionsSearch="@OnSearchAsync"
+			MaximumSelectedOptions="1"
+			OptionText="@(i => i.Name)"
+			@bind-SelectedOptions="@Data.Languages">
+
+			<OptionTemplate Context="language">
+				@language.HtmlFlagAndName
+			</OptionTemplate>
+			<MaximumSelectedOptionsMessage>
+				You can only select one country.
+			</MaximumSelectedOptionsMessage>
+		</FluentAutocomplete>
+
+		<FluentStack>
+			<FluentButton Appearance="Appearance.Accent" @onclick="ValidHandlerAsync">Register</FluentButton>
+		</FluentStack>
+	</EditForm>
+</FluentCard>
+
+@code {
+	private bool _loading = false;
+	private RegisterUser Data { get; set; } = new();
+	private bool _acceptToCreate = false;
+
+	private async Task ValidHandlerAsync()
+	{
+		_loading = true;
+		await Task.Delay(2000);
+		_loading = false;
+		await DialogService.ShowSuccessAsync("Registration successful", "Success");
+		// ToastService.ShowSuccess("Registration successful");
+	}
+
+	private async Task OnSearchAsync(OptionsSearchEventArgs<Country> e)
+	{
+		e.Items = Country.All.Where(c => c.Name.StartsWith(e.Text, StringComparison.OrdinalIgnoreCase))
+			.OrderBy(c => c.Name).ToList();
+		ToastService.ShowInfo("Searching for countries...");
+		await Task.CompletedTask;
+	}
+
+	public class RegisterUser
+	{
+		public string? FirstName { get; set; }
+		public string? LastName { get; set; }
+		public DateTime? DateOfBirth { get; set; }
+		public string? Email { get; set; }
+		public IEnumerable<Country> Languages { get; set; } = Array.Empty<Country>();
+	}
+
+}
