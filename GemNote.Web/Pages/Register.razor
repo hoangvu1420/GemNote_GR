@@ -10,7 +10,16 @@
 
 <PageTitle>Sign up</PageTitle>
 
-<div style="width: 80%; margin: auto;">
+<style>
+	.container {
+		width: 80%;
+		margin: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+</style>
+<div class="container">
 
 	<FluentLabel Typo="Typography.PageTitle">Sign up</FluentLabel>
 
@@ -59,7 +68,6 @@
 				Required="true"/>
 
 			<FluentSelect
-				Name="language"
 				TOption="Country"
 				Items="Countries"
 				Label="Select your language"
@@ -83,7 +91,7 @@
 @code {
 	private RegisterRequest Request { get; set; } = new();
 	private IEnumerable<Country> Countries { get; set; } = Country.All;
-	private Country Country { get; set; }
+	private Country Country { get; set; } = null!;
 
 	protected override void OnInitialized()
 	{

@@ -1,0 +1,85 @@
+﻿@page "/login"
+@using GemNote.Web.ViewModels.RequestModels
+@using GemNote.Web.ViewModels
+@using GemNote.Web.Services.Contracts
+
+@inject IAuthService AuthService
+@inject IDialogService DialogService
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Log in</PageTitle>
+
+<style>
+	.container{
+		width: 80%;
+		margin: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+</style>
+<div class="container">
+
+	<FluentLabel Typo="Typography.PageTitle">Log in</FluentLabel>
+
+	<FluentCard AreaRestricted="false"
+	            Style="margin: 20px 0; padding: 16px; width: 400px; height: auto;">
+		<FluentLabel Style="margin-bottom: 1rem">
+			Let's get you in!
+		</FluentLabel>
+
+		<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry">
+
+			<FluentTextField Name="email"
+			                 Label="Email"
+			                 @bind-Value="@Request.Email"
+			                 Style="width: 100%"
+			                 TextFieldType="TextFieldType.Email"
+			                 Placeholder="john.doe@example.com"
+			                 Required="true"
+			                 Spellcheck="true">
+				<FluentIcon Value="@(new Icons.Regular.Size16.Person())" Slot="start" Color="Color.Neutral"/>
+			</FluentTextField>
+
+			<FluentTextField Name="password"
+			                 Label="Password"
+			                 Style="width: 100%"
+			                 TextFieldType="TextFieldType.Password"
+			                 Placeholder="●●●●●●●●"
+			                 @bind-Value="@Request.Password"
+			                 Required="true">
+				<FluentIcon Value="@(new Icons.Regular.Size16.Password())" Slot="start" Color="Color.Neutral"/>
+			</FluentTextField>
+
+			<FluentStack>
+				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="margin-top: 1rem;">Log in</FluentButton>
+			</FluentStack>
+		</EditForm>
+	</FluentCard>
+
+</div>
+
+@code {
+	private LoginRequest Request { get; set; } = new();
+
+	private async Task ValidHandlerAsync()
+	{
+		var loginResponse = await AuthService.LoginAsync(Request);
+		if (!loginResponse.IsSucceed)
+		{
+			foreach (var error in loginResponse.ErrorMessages)
+			{
+				ToastService.ShowError(error);
+			}
+
+			return;
+		}
+
+		// ToastService.ShowSuccess("Log in successful!");
+		var dialog = await DialogService.ShowSuccessAsync("Log in successful!", "Welcome back!");
+		var result = await dialog.Result;
+		NavigationManager.NavigateTo("/");
+	}
+
+}

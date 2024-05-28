@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using GemNote.Web.Authentication;
 using GemNote.Web.Services.Contracts;
 using GemNote.Web.Services.Implementations;
+using GemNote.Web.States;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -29,6 +30,15 @@ public class Program
 		// Add services to the container.
 		builder.Services.AddScoped<IAuthService, AuthService>();
 
-		await builder.Build().RunAsync();
+		// Add states to the container.
+		builder.Services.AddScoped<UserState>();
+
+		var host = builder.Build();
+
+		// Load user state on startup
+		var userState = host.Services.GetRequiredService<UserState>();
+		await userState.LoadStateAsync();
+
+		await host.RunAsync();
 	}
 }

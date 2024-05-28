@@ -55,7 +55,7 @@ public record Country(string Code, string Name)
 				new("tr", "Turkey"),
 				new("ir", "Iran"),
 				new("iq", "Iraq")
-			}.OrderBy(c => c.Code);
+			}.OrderBy(c => c.Name);
 		}
 	}
 }

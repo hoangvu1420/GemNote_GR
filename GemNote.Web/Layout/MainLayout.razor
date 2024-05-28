@@ -1,4 +1,12 @@
 ﻿@using System.Runtime.InteropServices
+@using GemNote.Web.Services.Contracts
+@using GemNote.Web.States
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject UserState UserState
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
 @inherits LayoutComponentBase
 
 <FluentLayout>
@@ -11,13 +19,34 @@
 
 		<FluentSpacer/>
 
-		<FluentStack HorizontalAlignment="HorizontalAlignment.Right">
-			<FluentAnchor Href="register" Appearance="Appearance.Filled">
-				<FluentButton Appearance="Appearance.Stealth">
-					Sign up
-				</FluentButton>
-			</FluentAnchor>
-		</FluentStack>
+		<AuthorizeView>
+			<Authorized>
+				<FluentStack HorizontalAlignment="HorizontalAlignment.Right" Style="display: flex; align-items: center;">
+					<FluentPersona Name="@UserState.UserFullName"
+					               Image="@UserState.AvatarUrl"
+					               ImageSize="35px">
+					</FluentPersona>
+					<FluentButton
+						Appearance="Appearance.Accent"
+						IconEnd="@(new Icons.Regular.Size16.DoorArrowRight())"
+						OnClick="Logout"
+						Style="margin-left: 1rem;">
+						Log out
+					</FluentButton>
+				</FluentStack>
+			</Authorized>
+			<NotAuthorized>
+				<FluentStack HorizontalAlignment="HorizontalAlignment.Right">
+					<FluentButton Appearance="Appearance.Accent" OnClick="Login">
+						Log in
+					</FluentButton>
+
+					<FluentButton Appearance="Appearance.Accent" OnClick="Signup">
+						Sign up
+					</FluentButton>
+				</FluentStack>
+			</NotAuthorized>
+		</AuthorizeView>
 	</FluentHeader>
 
 	<FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
@@ -52,3 +81,32 @@
 		</div>
 	</FluentFooter>
 </FluentLayout>
+
+@code {
+
+	protected override void OnInitialized()
+	{
+		UserState.OnChange += StateHasChanged;
+	}
+
+	public void Dispose()
+	{
+		UserState.OnChange -= StateHasChanged;
+	}
+
+	private async Task Logout()
+	{
+		await AuthService.LogoutAsync();
+	}
+
+	private void Login()
+	{
+		NavigationManager.NavigateTo("/login");
+	}
+
+	private void Signup()
+	{
+		NavigationManager.NavigateTo("/register");
+	}
+
+}

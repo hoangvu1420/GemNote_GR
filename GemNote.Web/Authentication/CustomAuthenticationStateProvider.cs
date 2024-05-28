@@ -25,26 +25,14 @@ public class CustomAuthenticationStateProvider(ILocalStorageService localStorage
 
 			var claimsPrincipal = Generics.GetClaimsPrincipalFromClaims(claims);
 
+			// httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
 			return new AuthenticationState(claimsPrincipal);
 		}
 		catch
 		{
 			return await Task.FromResult(new AuthenticationState(_anonymous));
 		}
-
-		// var token = await localStorageService.GetItemAsync<string>("authToken");
-		// if (string.IsNullOrEmpty(token))
-		// {
-		// 	return _anonymous;
-		// }
-		//
-		// httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-		//
-		// var claims = JwtParser.ParseClaimsFromJwt(token);
-		// var identity = new ClaimsIdentity(claims, "jwt");
-		// var user = new ClaimsPrincipal(identity);
-		//
-		// return new AuthenticationState(user);
 	}
 
 	public async Task NotifyUserAuthenticationAsync(string token)
