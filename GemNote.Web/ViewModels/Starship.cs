@@ -20,8 +20,7 @@ public class Starship
     public int MaximumAccommodation { get; set; }
 
     [Required]
-    [Range(typeof(bool), "true", "true",
-        ErrorMessage = "This form disallows unapproved ships.")]
+    [Range(typeof(bool), "true", "true", ErrorMessage = "This form disallows unapproved ships.")]
     public bool IsValidatedDesign { get; set; }
 
     [Required]

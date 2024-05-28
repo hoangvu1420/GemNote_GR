@@ -1,12 +1,14 @@
 ﻿@page "/register"
 @using GemNote.Web.ViewModels
-@using System.ComponentModel.DataAnnotations
-@using System.Globalization
+@using GemNote.Web.ViewModels.RequestModels
+@using GemNote.Web.Services.Contracts
+
+@inject IAuthService AuthService
 @inject IDialogService DialogService
 @inject IToastService ToastService
+@inject NavigationManager NavigationManager
 
-<PageTitle>New user</PageTitle>
-
+<PageTitle>Sign up</PageTitle>
 
 <div style="width: 80%; margin: auto;">
 
@@ -19,11 +21,12 @@
 			Let's get you all set up!
 		</FluentLabel>
 
-		<EditForm Model="@User" OnValidSubmit="ValidHandlerAsync">
+		<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry">
 
 			<FluentTextField
+				Name="email"
 				Label="Email"
-				@bind-Value="@User.Email"
+				@bind-Value="@Request.Email"
 				Style="width: 100%"
 				TextFieldType="TextFieldType.Email"
 				Placeholder="john.doe@example.com"
@@ -31,27 +34,32 @@
 				Spellcheck="true"/>
 			
 			<FluentTextField
+				Name="password"
 				Label="Password"
 				Style="width: 100%"
 				TextFieldType="TextFieldType.Password" 
-				Placeholder="*******"
+				Placeholder="●●●●●●●●"
+				@bind-Value="@Request.Password"
 				Required="true"/>
 
 			<FluentTextField
+				Name="first_name"
 				Label="First name"
-				@bind-Value="@User.FirstName"
+				@bind-Value="@Request.FirstName"
 				Style="width: 100%"
 				Placeholder="John"
 				Required/>
 
 			<FluentTextField
+				Name="last_name"
 				Label="Last name"
-				@bind-Value="@User.LastName"
+				@bind-Value="@Request.LastName"
 				Style="width: 100%"
 				Placeholder="Doe"
 				Required="true"/>
 
 			<FluentSelect
+				Name="language"
 				TOption="Country"
 				Items="Countries"
 				Label="Select your language"
@@ -59,7 +67,7 @@
 				Height="200px"
 				OptionValue="@(c => c.Code)"
 				OptionText="@(c => c.Name)"
-				@bind-value="@User.Language"
+				@bind-value="@Request.Language"
 				@bind-SelectedOption="@Country">
 			</FluentSelect>
 
@@ -73,38 +81,27 @@
 </div>
 
 @code {
-	private RegisterUser User { get; set; } = new();
+	private RegisterRequest Request { get; set; } = new();
 	private IEnumerable<Country> Countries { get; set; } = Country.All;
-	private Country Country { get; set; } = null;
+	private Country Country { get; set; }
+
+	protected override void OnInitialized()
+	{
+		Country = Countries.FirstOrDefault(c => c.Code == "vn")!;
+	}
 
 	private async Task ValidHandlerAsync()
 	{
-		await Task.Delay(1000);
-		await DialogService.ShowSuccessAsync("Registration successful", "Success");
-		ToastService.ShowSuccess($"User's language: {User.Language}");
+		var authResponse = await AuthService.RegisterAsync(Request);
+		if (!authResponse.IsSucceed)
+		{
+			foreach (var error in authResponse.ErrorMessages)
+			{
+				ToastService.ShowError(error);
+			}
+			return;
+		}
+		ToastService.ShowSuccess("Sign up successful!");
+		NavigationManager.NavigateTo("/");
 	}
-
-	public class RegisterUser
-	{
-		[Required]
-		[EmailAddress(ErrorMessage = "Email is not valid.")]
-		public string? Email { get; set; }
-
-		[Required]
-		[MinLength(8, ErrorMessage = "Password has to be at least 8 characters long.")]
-		public string? Password { get; set; }
-
-		[Required]
-		[MinLength(3, ErrorMessage = "First name is too short!")]
-		[StringLength(16, ErrorMessage = "First name too long (16 character limit).")]
-		public string? FirstName { get; set; }
-
-		[Required]
-		[MinLength(3, ErrorMessage = "Last name is too short!")]
-		[StringLength(16, ErrorMessage = "Last name too long (16 character limit).")]
-		public string? LastName { get; set; }
-
-		public string? Language { get; set; }
-	}
-
 }
