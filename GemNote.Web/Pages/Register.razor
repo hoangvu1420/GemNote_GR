@@ -41,6 +41,7 @@
 				Placeholder="john.doe@example.com"
 				Required="true"
 				Spellcheck="true"/>
+			<FluentValidationMessage For="@(() => Request.Email)" />
 			
 			<FluentTextField
 				Name="password"
@@ -50,6 +51,7 @@
 				Placeholder="●●●●●●●●"
 				@bind-Value="@Request.Password"
 				Required="true"/>
+			<FluentValidationMessage For="@(() => Request.Password)" />
 
 			<FluentTextField
 				Name="first_name"
@@ -89,6 +91,7 @@
 </div>
 
 @code {
+	[SupplyParameterFromForm]
 	private RegisterRequest Request { get; set; } = new();
 	private IEnumerable<Country> Countries { get; set; } = Country.All;
 	private Country Country { get; set; } = null!;

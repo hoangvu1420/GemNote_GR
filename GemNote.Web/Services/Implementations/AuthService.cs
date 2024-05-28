@@ -21,43 +21,64 @@ public class AuthService(
 
 	public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
 	{
-		var response = await _apiClient.PostAsJsonAsync("api/auth/login", loginRequest);
-
-		if (!response.IsSuccessStatusCode)
+		try
 		{
-			var error = await response.Content.ReadFromJsonAsync<LoginResponse>();
-			return error!;
+			var response = await _apiClient.PostAsJsonAsync("api/auth/login", loginRequest);
+			if (!response.IsSuccessStatusCode)
+			{
+				var error = await response.Content.ReadFromJsonAsync<LoginResponse>();
+				return error!;
+			}
+
+			var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+			if (loginResponse == null)
+				return new LoginResponse
+				{
+					IsSucceed = false,
+					ErrorMessages = new List<string> { "There was an error logging in. Please try again." }
+				};
+
+			userState.UserId = loginResponse.UserInfo!.Id!;
+			userState.UserFullName = $"{loginResponse.UserInfo.FirstName!}  {loginResponse.UserInfo.LastName!}";
+			userState.AvatarUrl = loginResponse.UserInfo.AvatarUrl!;
+			userState.IsAuthenticated = true;
+			userState.IsAdmin = loginResponse.UserInfo.Roles!.Contains("Admin");
+			await userState.SaveStateAsync();
+
+			await ((CustomAuthenticationStateProvider)authenticationStateProvider).NotifyUserAuthenticationAsync(loginResponse.Token!);
+
+			_apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginResponse.Token);
+
+			return loginResponse;
 		}
-		
-		var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-		if (loginResponse == null)
+		catch (Exception e)
+		{
 			return new LoginResponse
 			{
 				IsSucceed = false,
-				ErrorMessages = new List<string> { "There was an error logging in. Please try again." }
+				ErrorMessages = [$"There was an error logging in. Please try again. {e.Message}"]
 			};
-
-		userState.UserId = loginResponse.UserInfo!.Id!;
-		userState.UserFullName = $"{loginResponse.UserInfo.FirstName!}  {loginResponse.UserInfo.LastName!}";
-		userState.AvatarUrl = loginResponse.UserInfo.AvatarUrl!;
-		userState.IsAuthenticated = true;
-		userState.IsAdmin = loginResponse.UserInfo.Roles!.Contains("Admin");
-		await userState.SaveStateAsync();
-		
-		await ((CustomAuthenticationStateProvider)authenticationStateProvider).NotifyUserAuthenticationAsync(loginResponse.Token!);
-		
-		_apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginResponse.Token);
-		
-		return loginResponse;
+		}
 	}
 
 	public async Task<AuthResponse> RegisterAsync(RegisterRequest registerRequest)
 	{
-		var response = await _apiClient.PostAsJsonAsync("api/auth/register", registerRequest);
+		try
+		{
+			var response = await _apiClient.PostAsJsonAsync("api/auth/register", registerRequest);
 
-		var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+			var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
 
-		return authResponse!;
+			return authResponse!;
+		}
+		catch (Exception e)
+		{
+			return new AuthResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = [$"There was an error logging in. Please try again. {e.Message}"]
+			};
+		}
 	}
 
 	public async Task LogoutAsync()

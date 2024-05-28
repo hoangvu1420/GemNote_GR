@@ -115,6 +115,17 @@ public static class ServiceCollectionExtensions
 						.AllowAnyHeader();
 				});
 		});
+		services.AddCors(options =>
+		{
+			options.AddPolicy("AllowClientWeb",
+				builder =>
+				{
+					builder
+						.WithOrigins("https://localhost:7013", "http://localhost:7013")
+						.AllowAnyMethod()
+						.AllowAnyHeader();
+				});
+		});
 	}
 
 	public static void AddServices(this IServiceCollection services)

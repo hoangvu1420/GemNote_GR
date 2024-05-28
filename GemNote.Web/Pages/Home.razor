@@ -19,7 +19,7 @@
 	<h1>Starfleet Starship Database</h1>
 
 	<h2>New Ship Entry Form</h2>
-
+	
 	<EditForm Model="@Starship" OnValidSubmit="@HandleValidSubmit" FormName="starship_fluent_entry" novalidate>
 		<DataAnnotationsValidator/>
 		<FluentValidationSummary/>
@@ -90,7 +90,8 @@
 		await Task.CompletedTask;
 	}
 
-	[SupplyParameterFromForm] private Starship Starship { get; set; } = new();
+	[SupplyParameterFromForm] 
+    private Starship Starship { get; set; } = new();
 
 	private void HandleValidSubmit()
 	{
