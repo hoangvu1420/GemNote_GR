@@ -81,10 +81,9 @@
 				@bind-SelectedOption="@Country">
 			</FluentSelect>
 
-			<FluentSpacer/>
-
-			<FluentStack>
-				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="margin-top: 1rem;">Sign up</FluentButton>
+			<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
+				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="IsLoading">Sign up</FluentButton>
+				<FluentProgressRing Visible="IsLoading"></FluentProgressRing>
 			</FluentStack>
 		</EditForm>
 	</FluentCard>
@@ -95,6 +94,7 @@
 	private RegisterRequest Request { get; set; } = new();
 	private IEnumerable<Country> Countries { get; set; } = Country.All;
 	private Country Country { get; set; } = null!;
+	private bool IsLoading { get; set; }
 
 	protected override void OnInitialized()
 	{
@@ -103,6 +103,7 @@
 
 	private async Task ValidHandlerAsync()
 	{
+		IsLoading = true;
 		var authResponse = await AuthService.RegisterAsync(Request);
 		if (!authResponse.IsSucceed)
 		{
@@ -112,7 +113,7 @@
 			}
 			return;
 		}
-		ToastService.ShowSuccess("Sign up successful!");
-		NavigationManager.NavigateTo("/");
+		IsLoading = false;
+		NavigationManager.NavigateTo("login");
 	}
 }
