@@ -35,7 +35,7 @@ public class CustomAuthenticationStateProvider(ILocalStorageService localStorage
 		}
 	}
 
-	public async Task NotifyUserAuthenticationAsync(string token)
+	public async Task NotifyUserAuthenticationAsync(string token, DateTime expirationDate, string refreshToken)
 	{
 		ClaimsPrincipal user = new();
 		if (!string.IsNullOrEmpty(token))
@@ -44,6 +44,14 @@ public class CustomAuthenticationStateProvider(ILocalStorageService localStorage
 			user = Generics.GetClaimsPrincipalFromClaims(userClaims);
 			await localStorageService.SetItemAsStringAsync("authToken", token);
 		}
+		if (expirationDate != default)
+		{
+			await localStorageService.SetItemAsync("expirationDate", expirationDate);
+		}
+		if (!string.IsNullOrEmpty(refreshToken))
+		{
+			await localStorageService.SetItemAsStringAsync("refreshToken", refreshToken);
+		}
 		var authState = Task.FromResult(new AuthenticationState(user));
 		NotifyAuthenticationStateChanged(authState);
 	}
@@ -51,6 +59,9 @@ public class CustomAuthenticationStateProvider(ILocalStorageService localStorage
 	public async Task NotifyUserLogoutAsync()
 	{
 		await localStorageService.RemoveItemAsync("authToken");
+		await localStorageService.RemoveItemAsync("expirationDate");
+		await localStorageService.RemoveItemAsync("refreshToken");
+
 		var authState = Task.FromResult(new AuthenticationState(_anonymous));
 		NotifyAuthenticationStateChanged(authState);
 	}

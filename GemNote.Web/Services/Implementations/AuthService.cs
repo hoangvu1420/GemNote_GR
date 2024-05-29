@@ -45,7 +45,10 @@ public class AuthService(
 			userState.IsAdmin = loginResponse.UserInfo.Roles!.Contains("Admin");
 			await userState.SaveStateAsync();
 
-			await ((CustomAuthenticationStateProvider)authenticationStateProvider).NotifyUserAuthenticationAsync(loginResponse.Token!);
+			await ((CustomAuthenticationStateProvider)authenticationStateProvider)
+				.NotifyUserAuthenticationAsync(loginResponse.Token!, 
+					loginResponse.ExpirationDate, 
+					loginResponse.RefreshToken!);
 
 			_apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginResponse.Token);
 

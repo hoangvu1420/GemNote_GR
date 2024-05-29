@@ -33,7 +33,7 @@
 		<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry">
 
 			<FluentTextField
-				Name="email"
+				Id="email"
 				Label="Email"
 				@bind-Value="@Request.Email"
 				Style="width: 100%"
@@ -44,7 +44,7 @@
 			<FluentValidationMessage For="@(() => Request.Email)" />
 			
 			<FluentTextField
-				Name="password"
+				Id="password"
 				Label="Password"
 				Style="width: 100%"
 				TextFieldType="TextFieldType.Password" 
@@ -54,7 +54,7 @@
 			<FluentValidationMessage For="@(() => Request.Password)" />
 
 			<FluentTextField
-				Name="first_name"
+				Id="first_name"
 				Label="First name"
 				@bind-Value="@Request.FirstName"
 				Style="width: 100%"
@@ -62,7 +62,7 @@
 				Required/>
 
 			<FluentTextField
-				Name="last_name"
+				Id="last_name"
 				Label="Last name"
 				@bind-Value="@Request.LastName"
 				Style="width: 100%"
@@ -70,6 +70,7 @@
 				Required="true"/>
 
 			<FluentSelect
+				Id="language"
 				TOption="Country"
 				Items="Countries"
 				Label="Select your language"

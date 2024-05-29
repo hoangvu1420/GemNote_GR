@@ -1,6 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
-<div class="navmenu">
+<style>
+	.navmenu {
+		padding: 5px;
+		background-color: #333333;
+		color: white;
+		border-top-right-radius: 10px;
+		border-bottom-right-radius: 10px;
+	}
+</style>
+<div class="navmenu" >
 	<input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon"/>
 	<label for="navmenu-toggle" class="navmenu-icon">
 		<FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill"/>
@@ -17,17 +26,20 @@
 					<FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">
 						Home
 					</FluentNavLink>
+					<FluentNavLink Href="test" Icon="@(new Icons.Regular.Size20.Battery10())" IconColor="Color.Accent">
+						Test
+					</FluentNavLink>
 				</NotAuthorized>
 
 				<Authorized>
 					<FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">
 						Home
 					</FluentNavLink>
-					<FluentNavLink Href="counter" Icon="@(new Icons.Regular.Size20.NumberSymbolSquare())" IconColor="Color.Accent">
-						Counter
+					<FluentNavLink Href="test" Icon="@(new Icons.Regular.Size20.Battery10())" IconColor="Color.Accent">
+						Test
 					</FluentNavLink>
-					<FluentNavLink Href="weather" Icon="@(new Icons.Regular.Size20.WeatherPartlyCloudyDay())" IconColor="Color.Accent">
-						Weather
+					<FluentNavLink Href="resources" Icon="@(new Icons.Regular.Size20.StoreMicrosoft())" IconColor="Color.Accent">
+						Resources
 					</FluentNavLink>
 				</Authorized>
 			</AuthorizeView>
@@ -36,5 +48,5 @@
 </div>
 
 @code {
-	private bool expanded = false;
+	private bool expanded = true;
 }

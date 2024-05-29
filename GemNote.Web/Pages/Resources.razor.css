@@ -1,0 +1,9 @@
+﻿.container {
+    width: 80%;
+    margin: auto;
+}
+
+.page-title {
+    margin-top: 1rem;
+    width: fit-content;
+}
