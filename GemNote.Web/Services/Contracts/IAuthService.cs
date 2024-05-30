@@ -5,7 +5,7 @@ namespace GemNote.Web.Services.Contracts;
 
 public interface IAuthService
 {
-	Task<LoginResponse> LoginAsync(LoginRequest loginRequest);
+	Task<LoginResponse> LoginAsync(LoginRequest loginRequest, bool isRememberMe);
 	Task<AuthResponse> RegisterAsync(RegisterRequest registerRequest);
 	Task LogoutAsync();
 }

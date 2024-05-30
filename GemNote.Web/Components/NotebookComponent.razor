@@ -1,0 +1,75 @@
+﻿@using GemNote.Web.ViewModels.ResourceModels
+
+<style>
+	.container {
+		width: 100%;
+		margin: 10px auto;
+	}
+
+	.acc-header {
+		margin: 0 10px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.acc-header-left {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+
+	.acc-header-right {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+</style>
+
+<div class="container">
+	<FluentAccordionItem>
+		<HeadingTemplate>
+			<div class="acc-header">
+				<div class="acc-header-left">
+					<FluentLabel Typo="Typography.H4" Color="Color.Accent">
+						@(Notebook.Name)
+					</FluentLabel>
+					<FluentLabel Typo="Typography.Body">
+						@(Notebook.Description ?? "No description")
+					</FluentLabel>
+				</div>
+				<div class="acc-header-right">
+					<FluentLabel Typo="Typography.Body">
+						@(Notebook.SectionQty > 0 ? Notebook.SectionQty + " sections" : "No sections")
+					</FluentLabel>
+				</div>
+			</div>
+		</HeadingTemplate>
+		<ChildContent>
+			<FluentTreeView>
+				<FluentTreeItem>
+					Root item
+					<FluentTreeItem> 
+						Flowers
+						<FluentTreeItem>Daisy</FluentTreeItem>
+						<FluentTreeItem>Sunflower</FluentTreeItem>
+						<FluentTreeItem>Rose</FluentTreeItem>
+					</FluentTreeItem>
+					<FluentTreeItem>
+						Planes
+						<FluentTreeItem>Tomcat</FluentTreeItem>
+						<FluentTreeItem>Hawker Harrier</FluentTreeItem>
+						<FluentTreeItem>Cesna</FluentTreeItem>
+					</FluentTreeItem>
+				</FluentTreeItem>
+			</FluentTreeView>
+		</ChildContent>
+	</FluentAccordionItem>
+</div>
+
+@code {
+	[Parameter] public NotebookVm Notebook { get; set; }
+}

@@ -19,7 +19,7 @@ public class AuthService(
 {
 	private readonly HttpClient _apiClient = httpClientFactory.CreateClient("ServerApi");
 
-	public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
+	public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest, bool isRememberMe)
 	{
 		try
 		{
@@ -43,14 +43,16 @@ public class AuthService(
 			userState.AvatarUrl = loginResponse.UserInfo.AvatarUrl!;
 			userState.IsAuthenticated = true;
 			userState.IsAdmin = loginResponse.UserInfo.Roles!.Contains("Admin");
+			userState.IsRememberMe = isRememberMe;
 			await userState.SaveStateAsync();
 
 			await ((CustomAuthenticationStateProvider)authenticationStateProvider)
-				.NotifyUserAuthenticationAsync(loginResponse.Token!, 
-					loginResponse.ExpirationDate, 
+				.NotifyUserAuthenticationAsync(loginResponse.Token!,
+					loginResponse.ExpirationDate,
 					loginResponse.RefreshToken!);
 
-			_apiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginResponse.Token);
+			_apiClient.DefaultRequestHeaders.Authorization =
+				new AuthenticationHeaderValue("Bearer", loginResponse.Token);
 
 			return loginResponse;
 		}

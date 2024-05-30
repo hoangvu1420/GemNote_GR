@@ -9,6 +9,7 @@ public class RegisterRequest
 	public string Email { get; set; }
 
 	[Required(ErrorMessage = "Password is required")]
+	[StringLength(16, ErrorMessage = "Password must be at least 8 characters and at most 16 characters", MinimumLength = 8)]
 	public string Password { get; set; }
 
 	[Required(ErrorMessage = "First name is required")]

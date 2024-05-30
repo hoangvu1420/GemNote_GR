@@ -30,7 +30,8 @@
 			Let's get you all set up!
 		</FluentLabel>
 
-		<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry">
+		<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry" novalidate>
+			<DataAnnotationsValidator />
 
 			<FluentTextField
 				Id="email"
@@ -60,6 +61,7 @@
 				Style="width: 100%"
 				Placeholder="John"
 				Required/>
+			<FluentValidationMessage For="@(() => Request.FirstName)" />
 
 			<FluentTextField
 				Id="last_name"
@@ -68,6 +70,7 @@
 				Style="width: 100%"
 				Placeholder="Doe"
 				Required="true"/>
+			<FluentValidationMessage For="@(() => Request.LastName)" />
 
 			<FluentSelect
 				Id="language"
@@ -83,8 +86,8 @@
 			</FluentSelect>
 
 			<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
-				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="IsLoading">Sign up</FluentButton>
-				<FluentProgressRing Visible="IsLoading"></FluentProgressRing>
+				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="_isLoading">Sign up</FluentButton>
+				<FluentProgressRing Visible="_isLoading"></FluentProgressRing>
 			</FluentStack>
 		</EditForm>
 	</FluentCard>
@@ -95,7 +98,8 @@
 	private RegisterRequest Request { get; set; } = new();
 	private IEnumerable<Country> Countries { get; set; } = Country.All;
 	private Country Country { get; set; } = null!;
-	private bool IsLoading { get; set; }
+
+	private bool _isLoading;
 
 	protected override void OnInitialized()
 	{
@@ -104,7 +108,7 @@
 
 	private async Task ValidHandlerAsync()
 	{
-		IsLoading = true;
+		_isLoading = true;
 		var authResponse = await AuthService.RegisterAsync(Request);
 		if (!authResponse.IsSucceed)
 		{
@@ -112,9 +116,10 @@
 			{
 				ToastService.ShowError(error);
 			}
+			_isLoading = false;
 			return;
 		}
-		IsLoading = false;
+		_isLoading = false;
 		NavigationManager.NavigateTo("login");
 	}
 }

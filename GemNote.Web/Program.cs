@@ -33,12 +33,6 @@ public class Program
 		// Add states to the container.
 		builder.Services.AddScoped<UserState>();
 
-		var host = builder.Build();
-
-		// Load user state on startup
-		var userState = host.Services.GetRequiredService<UserState>();
-		await userState.LoadStateAsync();
-
-		await host.RunAsync();
+		await builder.Build().RunAsync();
 	}
 }

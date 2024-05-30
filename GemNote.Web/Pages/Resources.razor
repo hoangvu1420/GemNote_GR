@@ -1,4 +1,6 @@
 ﻿@page "/resources"
+@using GemNote.Web.Components
+@using GemNote.Web.ViewModels.ResourceModels
 
 <PageTitle>Resources</PageTitle>
 
@@ -7,42 +9,38 @@
 		<FluentLabel Typo="Typography.PageTitle">Resources</FluentLabel>
 	</div>
 	<div class="content">
-		<FluentAccordion ActiveId="@activeId" OnAccordionItemChange="HandleOnAccordionItemChange">
-			<FluentAccordionItem Heading="Panel one">
-				<FluentIcon Value="@(new Icons.Regular.Size20.Globe())" Color="@Color.Neutral" Slot="start"/>
-				Panel one content, using the 'start' slot for extra header content (in this case an icon)
-			</FluentAccordionItem>
-			<FluentAccordionItem Heading="Panel two">
-				<div slot="end">
-					#end#
-				</div>
-				Panel two content, using the 'end' slot for extra header content (in this case an HTML button)
-			</FluentAccordionItem>
-			<FluentAccordionItem Expanded="true" Heading="Panel three">
-				Panel three content
-			</FluentAccordionItem>
-			<FluentAccordionItem Expanded="true">
-				<HeadingTemplate>
-					Panel <span style="color:red">Four</span> with custom header template 
-					<FluentButton Appearance="Appearance.Neutral">
-						Button
-					</FluentButton>
-				</HeadingTemplate>
-				<ChildContent>
-					Panel four content
-				</ChildContent>
-			</FluentAccordionItem>
-		</FluentAccordion>
+		@foreach (var notebook in Notebooks)
+		{
+			<NotebookComponent Notebook="notebook" />
+		}
 	</div>
 </div>
 
 @code {
-	string activeId = "accordion-1";
+	private IEnumerable<NotebookVm> Notebooks { get; set; }
 
-	FluentAccordionItem? changed;
-
-	private void HandleOnAccordionItemChange(FluentAccordionItem item)
+	protected override void OnInitialized()
 	{
-		changed = item;
+		Notebooks = new List<NotebookVm>
+		{
+			new()
+			{
+				Name = "Notebook 1",
+				Description = "This is the first notebook",
+				SectionQty = 3
+			},
+			new()
+			{
+				Name = "Notebook 2",
+				Description = null,
+				SectionQty = 5
+			},
+			new()
+			{
+				Name = "Notebook 3",
+				Description = "This is the third notebook",
+				SectionQty = 2
+			}
+		};
 	}
 }

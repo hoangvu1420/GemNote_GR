@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using GemNote.Web.States
+@inject UserState UserState
 
 <CascadingAuthenticationState>
 	<Router AppAssembly="@typeof(App).Assembly">
@@ -22,3 +24,11 @@
 	                   OfficeColor="OfficeColor.Excel"
 	                   StorageName="theme"/>
 </CascadingAuthenticationState>
+
+@code
+{
+	protected override async Task OnInitializedAsync()
+	{
+		await UserState.LoadStateAsync();
+	}
+}

@@ -53,10 +53,12 @@
 				<FluentIcon Value="@(new Icons.Regular.Size16.Password())" Slot="start" Color="Color.Neutral"/>
 			</FluentTextField>
 			<FluentValidationMessage For="@(() => Request.Password)" />
+			
+			<FluentCheckbox Name="remember-me" @bind-Value="_isRememberMe" Label="Remember me" Style="margin-top: 0.5rem;" />
 
 			<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
-				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="IsLoading">Log in</FluentButton>
-				<FluentProgressRing Visible="IsLoading"></FluentProgressRing>
+				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="_isLoading">Log in</FluentButton>
+				<FluentProgressRing Visible="_isLoading"></FluentProgressRing>
 			</FluentStack>
 		</EditForm>
 	</FluentCard>
@@ -66,22 +68,23 @@
 @code {
 	[SupplyParameterFromForm]
 	private LoginRequest Request { get; set; } = new();
-	private bool IsLoading { get; set; }
+	private bool _isRememberMe;
+	private bool _isLoading;
 
 	private async Task ValidHandlerAsync()
 	{
-		IsLoading = true;
-		var loginResponse = await AuthService.LoginAsync(Request);
+		_isLoading = true;
+		var loginResponse = await AuthService.LoginAsync(Request, _isRememberMe);
 		if (!loginResponse.IsSucceed)
 		{
 			foreach (var error in loginResponse.ErrorMessages)
 			{
 				ToastService.ShowError(error);
 			}
-			IsLoading = false;
+			_isLoading = false;
 			return;
 		}
-		IsLoading = false;
+		_isLoading = false;
 		NavigationManager.NavigateTo("/");
 	}
 }
