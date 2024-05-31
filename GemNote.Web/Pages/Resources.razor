@@ -1,6 +1,16 @@
 ﻿@page "/resources"
 @using GemNote.Web.Components
+@using GemNote.Web.Services.Contracts
+@using GemNote.Web.States
 @using GemNote.Web.ViewModels.ResourceModels
+@using System.Net
+@using Newtonsoft.Json
+
+@inject IDialogService DialogService
+@inject INotebookService NotebookService
+@inject UserState UserState
+@inject NavigationManager NavigationManager
+@inject ILogger<Resources> Logger
 
 <PageTitle>Resources</PageTitle>
 
@@ -9,38 +19,55 @@
 		<FluentLabel Typo="Typography.PageTitle">Resources</FluentLabel>
 	</div>
 	<div class="content">
-		@foreach (var notebook in Notebooks)
+		@if (Notebooks == null || !Notebooks.Any())
 		{
-			<NotebookComponent Notebook="notebook" />
+			<FluentLabel Typo="Typography.H5">
+				You don't have any notebooks yet. Create one now!
+			</FluentLabel>
+		}
+		else
+		{
+			<FluentLabel Typo="Typography.H5">
+				You have @Notebooks.Count() notebooks.
+			</FluentLabel>
+
+			@foreach (var notebook in Notebooks)
+			{
+				<NotebookComponent Notebook="notebook" />
+			}
 		}
 	</div>
 </div>
 
 @code {
-	private IEnumerable<NotebookVm> Notebooks { get; set; }
 
-	protected override void OnInitialized()
+	private IEnumerable<NotebookVm>? Notebooks { get; set; } 
+
+	protected override async Task OnInitializedAsync()
 	{
-		Notebooks = new List<NotebookVm>
+		var userId = UserState.UserId;
+		var (response, statusCode) = await NotebookService.GetNotebooksByUserIdAsync(userId!);
+
+		switch (statusCode)
 		{
-			new()
-			{
-				Name = "Notebook 1",
-				Description = "This is the first notebook",
-				SectionQty = 3
-			},
-			new()
-			{
-				Name = "Notebook 2",
-				Description = null,
-				SectionQty = 5
-			},
-			new()
-			{
-				Name = "Notebook 3",
-				Description = "This is the third notebook",
-				SectionQty = 2
-			}
-		};
+			case HttpStatusCode.Unauthorized:
+				await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+				NavigationManager.NavigateTo("/");
+				break;
+			case HttpStatusCode.Forbidden:
+				await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+				NavigationManager.NavigateTo("/");
+				break;
+		}
+
+		// Update UI based on response
+		if (response.IsSucceed)
+		{
+			Notebooks = JsonConvert.DeserializeObject<List<NotebookVm>>(response.Data!.ToString()!) ?? new List<NotebookVm>();
+		}
+		else
+		{
+			Notebooks = new List<NotebookVm>();
+		}
 	}
 }

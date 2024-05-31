@@ -19,16 +19,21 @@ public class Program
 		builder.RootComponents.Add<HeadOutlet>("head::after");
 
 		builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-		builder.Services.AddFluentUIComponents();
+		builder.Services.AddTransient<AuthenticationMessageHandler>();
+		builder.Services.AddHttpClient("ServerApi", client =>
+		{
+			client.BaseAddress = new Uri("https://localhost:7214/");
+		}).AddHttpMessageHandler<AuthenticationMessageHandler>();
 
-		builder.Services.AddHttpClient("ServerApi", client => client.BaseAddress = new Uri("https://localhost:7214/"));
+		builder.Services.AddFluentUIComponents();
 
 		builder.Services.AddBlazoredLocalStorage();
 		builder.Services.AddAuthorizationCore();
 		builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-
+		
 		// Add services to the container.
 		builder.Services.AddScoped<IAuthService, AuthService>();
+		builder.Services.AddScoped<INotebookService, NotebookService>();
 
 		// Add states to the container.
 		builder.Services.AddScoped<UserState>();

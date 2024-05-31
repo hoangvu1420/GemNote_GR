@@ -34,9 +34,12 @@
 		<HeadingTemplate>
 			<div class="acc-header">
 				<div class="acc-header-left">
-					<FluentLabel Typo="Typography.H4" Color="Color.Accent">
+					<FluentLabel Typo="Typography.H4" Color="Color.Accent" Style="margin-bottom: 5px;">
 						@(Notebook.Name)
 					</FluentLabel>
+					<FluentBadge Appearance="Appearance.Accent">
+						@(Notebook.Category)
+					</FluentBadge>
 					<FluentLabel Typo="Typography.Body">
 						@(Notebook.Description ?? "No description")
 					</FluentLabel>
@@ -52,7 +55,7 @@
 			<FluentTreeView>
 				<FluentTreeItem>
 					Root item
-					<FluentTreeItem> 
+					<FluentTreeItem>
 						Flowers
 						<FluentTreeItem>Daisy</FluentTreeItem>
 						<FluentTreeItem>Sunflower</FluentTreeItem>

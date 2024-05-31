@@ -97,6 +97,7 @@
 	private async Task Logout()
 	{
 		await AuthService.LogoutAsync();
+		NavigationManager.NavigateTo("/");
 	}
 
 	private void Login()
