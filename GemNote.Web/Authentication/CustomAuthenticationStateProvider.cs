@@ -25,8 +25,6 @@ public class CustomAuthenticationStateProvider(ILocalStorageService localStorage
 
 			var claimsPrincipal = Generics.GetClaimsPrincipalFromClaims(claims);
 
-			// httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
 			return new AuthenticationState(claimsPrincipal);
 		}
 		catch

@@ -98,4 +98,24 @@ public class AuthService(
 		await ((CustomAuthenticationStateProvider)authenticationStateProvider).NotifyUserLogoutAsync();
 		_apiClient.DefaultRequestHeaders.Authorization = null;
 	}
+
+	public async Task<AuthResponse> RefreshTokenAsync(string refreshToken)
+	{
+		try
+		{
+			var response = await _apiClient.PostAsJsonAsync("api/auth/refresh-token", new { refreshToken });
+
+			var authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>();
+
+			return authResponse!;
+		}
+		catch (Exception e)
+		{
+			return new AuthResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = [$"There was an error refreshing token. Please try again. {e.Message}"]
+			};
+		}
+	}
 }

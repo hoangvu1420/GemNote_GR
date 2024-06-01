@@ -1,16 +1,16 @@
 ﻿@page "/resources"
-@using GemNote.Web.Components
+@using GemNote.Web.Components.NotebookComponents
 @using GemNote.Web.Services.Contracts
 @using GemNote.Web.States
-@using GemNote.Web.ViewModels.ResourceModels
+@using GemNote.Web.ViewModels.NotebookViewModels
 @using System.Net
 @using Newtonsoft.Json
 
 @inject IDialogService DialogService
+@inject IToastService ToastService
 @inject INotebookService NotebookService
 @inject UserState UserState
 @inject NavigationManager NavigationManager
-@inject IToastService ToastService
 
 <PageTitle>Resources</PageTitle>
 
@@ -21,7 +21,7 @@
 	<div class="content">
 		@if (_isLoading)
 		{
-			<FluentStack Orientation="Orientation.Horizontal">
+			<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
 				<FluentLabel Typo="Typography.H5">
 					Loading resources...
 				</FluentLabel>
@@ -43,14 +43,14 @@
 				<FluentButton IconStart="@(new Icons.Regular.Size16.AddSquareMultiple())"
 				              Appearance="Appearance.Accent"
 							  Class="top-btn"
-							  OnClick="CreateNewNotebook">
+							  OnClick="OpenCreateNotebookDialogAsync">
 					Create new notebook
 				</FluentButton>
 			</div>
 
 			@foreach (var notebook in Notebooks)
 			{
-				<NotebookComponent Notebook="notebook"/>
+				<NotebookComp Notebook="notebook"/>
 			}
 		}
 	</div>
@@ -62,7 +62,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		if (!UserState.IsAuthenticated)
+		if (string.IsNullOrEmpty(UserState.UserId))
 		{
 			NavigationManager.NavigateTo("/unauthorized");
 			return;
@@ -74,11 +74,13 @@
 		switch (statusCode)
 		{
 			case HttpStatusCode.Unauthorized:
-				await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+				var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+				await dialog401.Result;
 				NavigationManager.NavigateTo("/");
 				break;
 			case HttpStatusCode.Forbidden:
-				await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+				var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+				await dialog403.Result;
 				NavigationManager.NavigateTo("/");
 				break;
 		}
@@ -88,17 +90,64 @@
 		{
 			Notebooks = JsonConvert.DeserializeObject<List<NotebookVm>>(response.Data!.ToString()!) ?? [];
 		}
-		else
-		{
-			Notebooks = new List<NotebookVm>();
-		}
 
 		_isLoading = false;
 	}
 
-	private void CreateNewNotebook()
+	private async Task OpenCreateNotebookDialogAsync()
 	{
-		ToastService.ShowInfo("Create new notebook");
+		var notebook = new CreateNotebookVm();
+
+		var dialog = await DialogService.ShowDialogAsync<CreateNotebookComp>(notebook, new DialogParameters()
+		{
+			Title = "New notebook",
+			OnDialogResult = DialogService.CreateDialogCallback(this, HandleDialog),
+			Width = "500px",
+			Height = "fit-content",
+			TrapFocus = true,
+			Modal = true
+		});
+		await dialog.Result;
+	}
+
+	private async Task HandleDialog(DialogResult result)
+	{
+		if (result.Cancelled)
+		{
+			ToastService.ShowError("Dialog cancelled");
+			return;
+		}
+		if (result.Data is not null)
+		{
+			CreateNotebookVm createNotebookVm = (result.Data as CreateNotebookVm)!;
+			createNotebookVm.AppUserId = UserState.UserId!;
+
+			var (response, statusCode) = await NotebookService.CreateNotebookAsync(createNotebookVm);
+
+			switch (statusCode)
+			{
+				case HttpStatusCode.Unauthorized:
+					var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+					await dialog401.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+				case HttpStatusCode.Forbidden:
+					var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+					await dialog403.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+			}
+
+			if (response.IsSucceed)
+			{
+				Notebooks = Notebooks.Append(JsonConvert.DeserializeObject<NotebookVm>(response.Data!.ToString()!));
+				ToastService.ShowSuccess("Notebook created successfully");
+			}
+			else
+			{
+				ToastService.ShowError("Failed to create notebook");
+			}
+		}
 	}
 
 }

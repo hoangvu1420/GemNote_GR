@@ -1,4 +1,6 @@
-﻿@using GemNote.Web.ViewModels.ResourceModels
+﻿@using GemNote.Web.ViewModels.NotebookViewModels
+
+@inject IToastService ToastService
 
 <style>
 	.container {
@@ -30,7 +32,7 @@
 </style>
 
 <div class="container">
-	<FluentAccordionItem>
+	<FluentAccordionItem ExpandedChanged="OnExpanded">
 		<HeadingTemplate>
 			<div class="acc-header">
 				<div class="acc-header-left">
@@ -75,4 +77,12 @@
 
 @code {
 	[Parameter] public NotebookVm Notebook { get; set; }
+
+	private void OnExpanded(bool expanded)
+	{
+		if (expanded)
+		{
+			ToastService.ShowSuccess("Expanded");
+		}
+	}
 }

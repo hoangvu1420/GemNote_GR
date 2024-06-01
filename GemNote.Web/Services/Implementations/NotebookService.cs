@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 using GemNote.Web.Services.Contracts;
 using GemNote.Web.States;
-using GemNote.Web.ViewModels.ResourceModels;
+using GemNote.Web.ViewModels.NotebookViewModels;
 using GemNote.Web.ViewModels.ResponseModels;
 
 namespace GemNote.Web.Services.Implementations;
@@ -18,10 +18,29 @@ public class NotebookService(IHttpClientFactory httpClientFactory, ILogger<Noteb
 			var response = await _apiClient.GetAsync($"api/notebooks?userId={userId}");
 			if (!response.IsSuccessStatusCode)
 			{
-				var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
 				var statusCode = response.StatusCode;
-				logger.LogError($"Error getting notebooks: {statusCode}");
-				return (error!, statusCode);
+				var errorMessages = new List<string>();
+				switch (statusCode)
+				{
+					case HttpStatusCode.Forbidden:
+						errorMessages = ["You are forbidden to get these notebooks."];
+						break;
+					case HttpStatusCode.Unauthorized:
+						errorMessages = ["You are not authorized to get notebooks."];
+						break;
+					case HttpStatusCode.NotFound:
+						var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
+						return (error!, statusCode);
+					default:
+						errorMessages = ["There was an error getting notebooks. Please try again."];
+						break;
+				}
+
+				return (new ApiResponse
+				{
+					IsSucceed = false,
+					ErrorMessages = errorMessages
+				}, statusCode);
 			}
 
 			var content = await response.Content.ReadFromJsonAsync<ApiResponse>() ?? new ApiResponse
@@ -47,12 +66,58 @@ public class NotebookService(IHttpClientFactory httpClientFactory, ILogger<Noteb
 		throw new NotImplementedException();
 	}
 
-	public Task<(ApiResponse response, HttpStatusCode statusCode)> CreateNotebookAsync(NotebookVm notebookVm)
+	public async Task<(ApiResponse response, HttpStatusCode statusCode)> CreateNotebookAsync(CreateNotebookVm notebookVm)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			var response = await _apiClient.PostAsJsonAsync("api/notebooks", notebookVm);
+
+			if (!response.IsSuccessStatusCode)
+			{
+				var statusCode = response.StatusCode;
+				var errorMessages = new List<string>();
+				switch (statusCode)
+				{
+					case HttpStatusCode.Forbidden:
+						errorMessages = ["You are forbidden to create a notebook."];
+						break;
+					case HttpStatusCode.Unauthorized:
+						errorMessages = ["You are not authorized to create a notebook."];
+						break;
+					case HttpStatusCode.BadRequest:
+						var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
+						return (error!, statusCode);
+					default:
+						errorMessages = ["There was an error creating notebook. Please try again."];
+						break;
+				}
+
+				return (new ApiResponse
+				{
+					IsSucceed = false,
+					ErrorMessages = errorMessages
+				}, statusCode);
+			}
+
+			var content = await response.Content.ReadFromJsonAsync<ApiResponse>() ?? new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = new List<string> { "There was an error creating notebook. Please try again." }
+			};
+
+			return (content, response.StatusCode);
+		}
+		catch (Exception e)
+		{
+			return (new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = new List<string> { $"There was an error creating notebook. Please try again. {e.Message}" }
+			}, HttpStatusCode.InternalServerError);
+		}
 	}
 
-	public Task<(ApiResponse response, HttpStatusCode statusCode)> UpdateNotebookAsync(NotebookVm notebookVm)
+	public Task<(ApiResponse response, HttpStatusCode statusCode)> UpdateNotebookAsync(UpdateNotebookVm notebookVm)
 	{
 		throw new NotImplementedException();
 	}

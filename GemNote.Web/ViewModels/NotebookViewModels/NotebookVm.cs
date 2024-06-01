@@ -1,4 +1,4 @@
-﻿namespace GemNote.Web.ViewModels.ResourceModels;
+﻿namespace GemNote.Web.ViewModels.NotebookViewModels;
 
 public class NotebookVm
 {
