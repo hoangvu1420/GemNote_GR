@@ -13,89 +13,122 @@
 <style>
 	.container {
 		width: 80%;
+		height: 88vh;
 		margin: auto;
 		display: flex;
-		flex-direction: column;
+		justify-content: center;
 		align-items: center;
+	}
+
+	.card {
+		margin: 50px 0;
+		padding: 16px;
+		width: 70%;
+		height: 80%;
+		display: flex;
+		flex-direction: row;
+	}
+
+	.image-box {
+		margin-right: 1rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+		.image-box > img {
+			height: 100%;
+			width: auto;
+			border-radius: 5px;
+		}
+
+	.form-box {
+		flex-grow: 1;
+		margin-left: 1rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 	}
 </style>
 <div class="container">
 
-	<FluentLabel Typo="Typography.PageTitle">Sign up</FluentLabel>
+	<FluentCard AreaRestricted="false" Class="card">
+		<div class="image-box">
+			<img src="images/greencard2.png" alt="gem card image"/>
+		</div>
+		<div class="form-box">
+			<FluentLabel Typo="Typography.PageTitle" Style="align-self: center;">Sign up</FluentLabel>
+			<FluentLabel Style="margin-bottom: 1rem; margin-top: 0.5rem;">
+				Let's get you all set up!
+			</FluentLabel>
 
-	<FluentCard 
-		AreaRestricted="false"
-		Style="margin: 20px 0; padding: 16px; width: 400px; height: auto;">
-		<FluentLabel Style="margin-bottom: 1rem">
-			Let's get you all set up!
-		</FluentLabel>
+			<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry" novalidate>
+				<DataAnnotationsValidator/>
 
-		<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry" novalidate>
-			<DataAnnotationsValidator />
+				<FluentTextField
+					Id="email"
+					Label="Email"
+					@bind-Value="@Request.Email"
+					Style="width: 100%"
+					TextFieldType="TextFieldType.Email"
+					Placeholder="john.doe@example.com"
+					Required="true"
+					Spellcheck="true"/>
+				<FluentValidationMessage For="@(() => Request.Email)"/>
 
-			<FluentTextField
-				Id="email"
-				Label="Email"
-				@bind-Value="@Request.Email"
-				Style="width: 100%"
-				TextFieldType="TextFieldType.Email"
-				Placeholder="john.doe@example.com"
-				Required="true"
-				Spellcheck="true"/>
-			<FluentValidationMessage For="@(() => Request.Email)" />
-			
-			<FluentTextField
-				Id="password"
-				Label="Password"
-				Style="width: 100%"
-				TextFieldType="TextFieldType.Password" 
-				Placeholder="●●●●●●●●"
-				@bind-Value="@Request.Password"
-				Required="true"/>
-			<FluentValidationMessage For="@(() => Request.Password)" />
+				<FluentTextField
+					Id="password"
+					Label="Password"
+					Style="width: 100%"
+					TextFieldType="TextFieldType.Password"
+					Placeholder="●●●●●●●●"
+					@bind-Value="@Request.Password"
+					Required="true"/>
+				<FluentValidationMessage For="@(() => Request.Password)"/>
 
-			<FluentTextField
-				Id="first_name"
-				Label="First name"
-				@bind-Value="@Request.FirstName"
-				Style="width: 100%"
-				Placeholder="John"
-				Required/>
-			<FluentValidationMessage For="@(() => Request.FirstName)" />
+				<FluentTextField
+					Id="first_name"
+					Label="First name"
+					@bind-Value="@Request.FirstName"
+					Style="width: 100%"
+					Placeholder="John"
+					Required/>
+				<FluentValidationMessage For="@(() => Request.FirstName)"/>
 
-			<FluentTextField
-				Id="last_name"
-				Label="Last name"
-				@bind-Value="@Request.LastName"
-				Style="width: 100%"
-				Placeholder="Doe"
-				Required="true"/>
-			<FluentValidationMessage For="@(() => Request.LastName)" />
+				<FluentTextField
+					Id="last_name"
+					Label="Last name"
+					@bind-Value="@Request.LastName"
+					Style="width: 100%"
+					Placeholder="Doe"
+					Required="true"/>
+				<FluentValidationMessage For="@(() => Request.LastName)"/>
 
-			<FluentSelect
-				Id="language"
-				TOption="Country"
-				Items="Countries"
-				Label="Select your language"
-				Width="100%"
-				Height="200px"
-				OptionValue="@(c => c.Code)"
-				OptionText="@(c => c.Name)"
-				@bind-value="@Request.Language"
-				@bind-SelectedOption="@Country">
-			</FluentSelect>
+				<FluentSelect
+					Id="language"
+					TOption="Country"
+					Items="Countries"
+					Label="Select your language"
+					Width="100%"
+					Height="200px"
+					OptionValue="@(c => c.Code)"
+					OptionText="@(c => c.Name)"
+					@bind-value="@Request.Language"
+					@bind-SelectedOption="@Country">
+				</FluentSelect>
 
-			<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
-				<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="_isLoading">Sign up</FluentButton>
-				<FluentProgressRing Visible="_isLoading"></FluentProgressRing>
-			</FluentStack>
-		</EditForm>
+				<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
+					<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="_isLoading">Sign up</FluentButton>
+					<FluentProgressRing Visible="_isLoading"></FluentProgressRing>
+				</FluentStack>
+			</EditForm>
+		</div>
 	</FluentCard>
 </div>
 
 @code {
-	[SupplyParameterFromForm]
-	private RegisterRequest Request { get; set; } = new();
+	[SupplyParameterFromForm] private RegisterRequest Request { get; set; } = new();
 	private IEnumerable<Country> Countries { get; set; } = Country.All;
 	private Country Country { get; set; } = null!;
 
@@ -116,10 +149,13 @@
 			{
 				ToastService.ShowError(error);
 			}
+
 			_isLoading = false;
 			return;
 		}
+
 		_isLoading = false;
 		NavigationManager.NavigateTo("login");
 	}
+
 }

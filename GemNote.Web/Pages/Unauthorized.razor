@@ -1,0 +1,23 @@
+﻿@page "/unauthorized"
+
+<PageTitle>Unauthorized</PageTitle>
+
+<style>
+	.container{
+		width: 80%;
+		margin: auto;
+	}
+</style>
+
+<div class="container">
+	<FluentLabel Typo="Typography.PageTitle">Unauthorized</FluentLabel>
+	<FluentLabel Typo="Typography.Body">
+		You are not authorized to access this page. Please
+		<FluentAnchor Href="login" Appearance="Appearance.Hypertext">log in</FluentAnchor> or <FluentAnchor Href="register" Appearance="Appearance.Hypertext">sign up</FluentAnchor>
+		to access this page.
+	</FluentLabel>
+</div>
+
+@code {
+
+}

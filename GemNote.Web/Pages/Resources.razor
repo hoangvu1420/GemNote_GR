@@ -10,7 +10,7 @@
 @inject INotebookService NotebookService
 @inject UserState UserState
 @inject NavigationManager NavigationManager
-@inject ILogger<Resources> Logger
+@inject IToastService ToastService
 
 <PageTitle>Resources</PageTitle>
 
@@ -19,7 +19,16 @@
 		<FluentLabel Typo="Typography.PageTitle">Resources</FluentLabel>
 	</div>
 	<div class="content">
-		@if (Notebooks == null || !Notebooks.Any())
+		@if (_isLoading)
+		{
+			<FluentStack Orientation="Orientation.Horizontal">
+				<FluentLabel Typo="Typography.H5">
+					Loading resources...
+				</FluentLabel>
+				<FluentProgressRing></FluentProgressRing>
+			</FluentStack>
+		}
+		else if (Notebooks == null || !Notebooks.Any())
 		{
 			<FluentLabel Typo="Typography.H5">
 				You don't have any notebooks yet. Create one now!
@@ -27,24 +36,38 @@
 		}
 		else
 		{
-			<FluentLabel Typo="Typography.H5">
-				You have @Notebooks.Count() notebooks.
-			</FluentLabel>
+			<div class="top-bar">
+				<FluentLabel Typo="Typography.H5" Class="top-label">
+					You have @Notebooks.Count() notebooks.
+				</FluentLabel>
+				<FluentButton IconStart="@(new Icons.Regular.Size16.AddSquareMultiple())"
+				              Appearance="Appearance.Accent"
+							  Class="top-btn"
+							  OnClick="CreateNewNotebook">
+					Create new notebook
+				</FluentButton>
+			</div>
 
 			@foreach (var notebook in Notebooks)
 			{
-				<NotebookComponent Notebook="notebook" />
+				<NotebookComponent Notebook="notebook"/>
 			}
 		}
 	</div>
 </div>
 
 @code {
-
-	private IEnumerable<NotebookVm>? Notebooks { get; set; } 
+	private IEnumerable<NotebookVm>? Notebooks { get; set; } = new List<NotebookVm>();
+	private bool _isLoading = true;
 
 	protected override async Task OnInitializedAsync()
 	{
+		if (!UserState.IsAuthenticated)
+		{
+			NavigationManager.NavigateTo("/unauthorized");
+			return;
+		}
+
 		var userId = UserState.UserId;
 		var (response, statusCode) = await NotebookService.GetNotebooksByUserIdAsync(userId!);
 
@@ -63,11 +86,19 @@
 		// Update UI based on response
 		if (response.IsSucceed)
 		{
-			Notebooks = JsonConvert.DeserializeObject<List<NotebookVm>>(response.Data!.ToString()!) ?? new List<NotebookVm>();
+			Notebooks = JsonConvert.DeserializeObject<List<NotebookVm>>(response.Data!.ToString()!) ?? [];
 		}
 		else
 		{
 			Notebooks = new List<NotebookVm>();
 		}
+
+		_isLoading = false;
 	}
+
+	private void CreateNewNotebook()
+	{
+		ToastService.ShowInfo("Create new notebook");
+	}
+
 }
