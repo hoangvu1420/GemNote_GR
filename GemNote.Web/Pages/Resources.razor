@@ -1,16 +1,5 @@
 ﻿@page "/resources"
 @using GemNote.Web.Components.NotebookComponents
-@using GemNote.Web.Services.Contracts
-@using GemNote.Web.States
-@using GemNote.Web.ViewModels.NotebookViewModels
-@using System.Net
-@using Newtonsoft.Json
-
-@inject IDialogService DialogService
-@inject IToastService ToastService
-@inject INotebookService NotebookService
-@inject UserState UserState
-@inject NavigationManager NavigationManager
 
 <PageTitle>Resources</PageTitle>
 
@@ -28,126 +17,26 @@
 				<FluentProgressRing></FluentProgressRing>
 			</FluentStack>
 		}
-		else if (Notebooks == null || !Notebooks.Any())
-		{
-			<FluentLabel Typo="Typography.H5">
-				You don't have any notebooks yet. Create one now!
-			</FluentLabel>
-		}
 		else
 		{
 			<div class="top-bar">
 				<FluentLabel Typo="Typography.H5" Class="top-label">
-					You have @Notebooks.Count() notebooks.
+					@_message
 				</FluentLabel>
 				<FluentButton IconStart="@(new Icons.Regular.Size16.AddSquareMultiple())"
 				              Appearance="Appearance.Accent"
-							  Class="top-btn"
-							  OnClick="OpenCreateNotebookDialogAsync">
+				              Class="top-btn"
+				              OnClick="OpenCreateNotebookDialogAsync">
 					Create new notebook
 				</FluentButton>
 			</div>
 
 			@foreach (var notebook in Notebooks)
 			{
-				<NotebookComp Notebook="notebook"/>
+				<NotebookComp Notebook="notebook"
+				              OnEdit="HandleEditNotebook"
+				              OnDelete="HandleDeleteNotebook"/>
 			}
 		}
 	</div>
 </div>
-
-@code {
-	private IEnumerable<NotebookVm>? Notebooks { get; set; } = new List<NotebookVm>();
-	private bool _isLoading = true;
-
-	protected override async Task OnInitializedAsync()
-	{
-		if (string.IsNullOrEmpty(UserState.UserId))
-		{
-			NavigationManager.NavigateTo("/unauthorized");
-			return;
-		}
-
-		var userId = UserState.UserId;
-		var (response, statusCode) = await NotebookService.GetNotebooksByUserIdAsync(userId!);
-
-		switch (statusCode)
-		{
-			case HttpStatusCode.Unauthorized:
-				var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
-				await dialog401.Result;
-				NavigationManager.NavigateTo("/");
-				break;
-			case HttpStatusCode.Forbidden:
-				var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
-				await dialog403.Result;
-				NavigationManager.NavigateTo("/");
-				break;
-		}
-
-		// Update UI based on response
-		if (response.IsSucceed)
-		{
-			Notebooks = JsonConvert.DeserializeObject<List<NotebookVm>>(response.Data!.ToString()!) ?? [];
-		}
-
-		_isLoading = false;
-	}
-
-	private async Task OpenCreateNotebookDialogAsync()
-	{
-		var notebook = new CreateNotebookVm();
-
-		var dialog = await DialogService.ShowDialogAsync<CreateNotebookComp>(notebook, new DialogParameters()
-		{
-			Title = "New notebook",
-			OnDialogResult = DialogService.CreateDialogCallback(this, HandleDialog),
-			Width = "500px",
-			Height = "fit-content",
-			TrapFocus = true,
-			Modal = true
-		});
-		await dialog.Result;
-	}
-
-	private async Task HandleDialog(DialogResult result)
-	{
-		if (result.Cancelled)
-		{
-			ToastService.ShowError("Dialog cancelled");
-			return;
-		}
-		if (result.Data is not null)
-		{
-			CreateNotebookVm createNotebookVm = (result.Data as CreateNotebookVm)!;
-			createNotebookVm.AppUserId = UserState.UserId!;
-
-			var (response, statusCode) = await NotebookService.CreateNotebookAsync(createNotebookVm);
-
-			switch (statusCode)
-			{
-				case HttpStatusCode.Unauthorized:
-					var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
-					await dialog401.Result;
-					NavigationManager.NavigateTo("/");
-					break;
-				case HttpStatusCode.Forbidden:
-					var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
-					await dialog403.Result;
-					NavigationManager.NavigateTo("/");
-					break;
-			}
-
-			if (response.IsSucceed)
-			{
-				Notebooks = Notebooks.Append(JsonConvert.DeserializeObject<NotebookVm>(response.Data!.ToString()!));
-				ToastService.ShowSuccess("Notebook created successfully");
-			}
-			else
-			{
-				ToastService.ShowError("Failed to create notebook");
-			}
-		}
-	}
-
-}

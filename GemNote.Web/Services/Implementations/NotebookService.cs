@@ -117,13 +117,105 @@ public class NotebookService(IHttpClientFactory httpClientFactory, ILogger<Noteb
 		}
 	}
 
-	public Task<(ApiResponse response, HttpStatusCode statusCode)> UpdateNotebookAsync(UpdateNotebookVm notebookVm)
+	public async Task<(ApiResponse response, HttpStatusCode statusCode)> UpdateNotebookAsync(UpdateNotebookVm notebookVm)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			var response = await _apiClient.PutAsJsonAsync($"api/notebooks/{notebookVm.Id}", notebookVm);
+
+			if (!response.IsSuccessStatusCode)
+			{
+				var statusCode = response.StatusCode;
+				var errorMessages = new List<string>();
+				switch (statusCode)
+				{
+					case HttpStatusCode.Forbidden:
+						errorMessages = ["You are forbidden to update this notebook."];
+						break;
+					case HttpStatusCode.Unauthorized:
+						errorMessages = ["You are not authorized to update this notebook."];
+						break;
+					case HttpStatusCode.NotFound:
+						var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
+						return (error!, statusCode);
+					default:
+						errorMessages = ["There was an error updating notebook. Please try again."];
+						break;
+				}
+
+				return (new ApiResponse
+				{
+					IsSucceed = false,
+					ErrorMessages = errorMessages
+				}, statusCode);
+			}
+
+			var content = await response.Content.ReadFromJsonAsync<ApiResponse>() ?? new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = new List<string> { "There was an error updating notebook. Please try again." }
+			};
+
+			return (content, response.StatusCode);
+		}
+		catch (Exception e)
+		{
+			return (new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = new List<string> { $"There was an error updating notebook. Please try again. {e.Message}" }
+			}, HttpStatusCode.InternalServerError);
+		}
 	}
 
-	public Task<(ApiResponse response, HttpStatusCode statusCode)> DeleteNotebookAsync(int notebookId)
+	public async Task<(ApiResponse response, HttpStatusCode statusCode)> DeleteNotebookAsync(int notebookId)
 	{
-		throw new NotImplementedException();
+		try
+		{
+			var response = await _apiClient.DeleteAsync($"api/notebooks/{notebookId}");
+
+			if (!response.IsSuccessStatusCode)
+			{
+				var statusCode = response.StatusCode;
+				var errorMessages = new List<string>();
+				switch (statusCode)
+				{
+					case HttpStatusCode.Forbidden:
+						errorMessages = ["You are forbidden to delete this notebook."];
+						break;
+					case HttpStatusCode.Unauthorized:
+						errorMessages = ["You are not authorized to delete this notebook."];
+						break;
+					case HttpStatusCode.NotFound:
+						var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
+						return (error!, statusCode);
+					default:
+						errorMessages = ["There was an error deleting notebook. Please try again."];
+						break;
+				}
+
+				return (new ApiResponse
+				{
+					IsSucceed = false,
+					ErrorMessages = errorMessages
+				}, statusCode);
+			}
+
+			var content = await response.Content.ReadFromJsonAsync<ApiResponse>() ?? new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = new List<string> { "There was an error deleting notebook. Please try again." }
+			};
+
+			return (content, response.StatusCode);
+		}
+		catch (Exception e)
+		{
+			return (new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = new List<string> { $"There was an error deleting notebook. Please try again. {e.Message}" }
+			}, HttpStatusCode.InternalServerError);
+		}
 	}
 }

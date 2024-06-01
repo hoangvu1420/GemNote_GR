@@ -67,7 +67,7 @@
 				<DataAnnotationsValidator/>
 
 				<FluentTextField
-					Id="email"
+					Name="email"
 					Label="Email"
 					@bind-Value="@Request.Email"
 					Style="width: 100%"
@@ -78,7 +78,7 @@
 				<FluentValidationMessage For="@(() => Request.Email)"/>
 
 				<FluentTextField
-					Id="password"
+					Name="password"
 					Label="Password"
 					Style="width: 100%"
 					TextFieldType="TextFieldType.Password"
@@ -88,7 +88,7 @@
 				<FluentValidationMessage For="@(() => Request.Password)"/>
 
 				<FluentTextField
-					Id="first_name"
+					Name="first_name"
 					Label="First name"
 					@bind-Value="@Request.FirstName"
 					Style="width: 100%"
@@ -97,7 +97,7 @@
 				<FluentValidationMessage For="@(() => Request.FirstName)"/>
 
 				<FluentTextField
-					Id="last_name"
+					Name="last_name"
 					Label="Last name"
 					@bind-Value="@Request.LastName"
 					Style="width: 100%"
