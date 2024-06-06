@@ -139,6 +139,7 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<ISeeder, Seeder>();
 		services.AddScoped<IAuthService, AuthService>();
 		services.AddScoped<INotebookService, NotebookService>();
+		services.AddScoped<ISectionService, SectionService>();
 	}
 
 	public static void AddRepositories(this IServiceCollection services)
@@ -148,5 +149,6 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 		services.AddScoped<INotebookRepository, NotebookRepository>();
 		services.AddScoped<ICategoryRepository, CategoryRepository>();
+		services.AddScoped<ISectionRepository, SectionRepository>();
 	}
 }

@@ -16,7 +16,7 @@ public class NotebookService(
 	{
 		var response = new ApiResponse();
 
-		var notebooks = await notebookRepository.GetAllAsync(includeProperties: "Category");
+		var notebooks = await notebookRepository.GetAllAsync(includeProperties: "Category, Sections");
 
 		var notebookList = notebooks.ToList();
 		if (!notebookList.Any())
@@ -37,7 +37,7 @@ public class NotebookService(
 		var response = new ApiResponse();
 
 		var notebooks =
-			await notebookRepository.GetAllAsync(filter: n => n.AppUserId == userId, includeProperties: "Category");
+			await notebookRepository.GetAllAsync(filter: n => n.AppUserId == userId, includeProperties: "Category, Sections");
 
 		var notebookList = notebooks.ToList();
 		if (!notebookList.Any())
@@ -58,7 +58,7 @@ public class NotebookService(
 		var response = new ApiResponse();
 
 		var notebook =
-			await notebookRepository.GetAsync(filter: n => n.Id == notebookId, includeProperties: "Category");
+			await notebookRepository.GetAsync(filter: n => n.Id == notebookId, includeProperties: "Category, Sections");
 
 		if (notebook == null)
 		{
@@ -113,7 +113,7 @@ public class NotebookService(
 			return response;
 		}
 
-		var notebook = await notebookRepository.GetAsync(filter: n => n.Id == notebookId, includeProperties: "Category");
+		var notebook = await notebookRepository.GetAsync(filter: n => n.Id == notebookId, includeProperties: "Category, Sections");
 		if (notebook == null)
 		{
 			response.IsSucceed = false;

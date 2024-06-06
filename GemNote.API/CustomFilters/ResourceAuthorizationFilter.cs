@@ -96,7 +96,7 @@ public class ResourceAuthorizationFilter<T>(
 		if (query.TryGetValue("notebookId", out var notebookIdValue))
 		{
 			var notebookId = int.Parse(notebookIdValue.ToString());
-			var notebook = await repository.GetAsync(p => (p as Notebook)!.Id == notebookId);
+			var notebook = await repository.GetAsync(n => (n as Notebook)!.Id == notebookId);
 
 			if (notebook == null)
 			{

@@ -1,19 +1,18 @@
-﻿using System.Security.Claims;
-using GemNote.API.CustomFilters;
+﻿using GemNote.API.CustomFilters;
 using GemNote.API.DTOs;
-using GemNote.API.DTOs.NotebookDtos;
+using GemNote.API.DTOs.SectionDtos;
 using GemNote.API.Models;
 using GemNote.API.Services.Contracts;
-using GemNote.API.StaticDetails;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GemNote.API.Controllers;
 
-[Route("api/notebooks")]
+[Route("api/sections")]
 [ApiController]
 [Authorize]
-public class NotebookController(INotebookService notebookService) : ControllerBase
+public class SectionController(ISectionService sectionService) : ControllerBase
 {
 	private ApiResponse _response = new();
 
@@ -24,24 +23,20 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetNotebooksAsync([FromQuery] string? userId)
+	public async Task<IActionResult> GetSectionsAsync([FromQuery] int? notebookId)
 	{
 		try
 		{
-			if (!string.IsNullOrEmpty(userId))
+			if (notebookId.HasValue)
 			{
-				_response = await notebookService.GetNotebooksByUserIdAsync(userId);
+				_response = await sectionService.GetSectionsByNotebookIdAsync(notebookId.Value);
 				if (!_response.IsSucceed)
 					return NotFound(_response);
 
 				return Ok(_response);
 			}
 
-			var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
-
-			if (!userRoles.Contains(UserRoles.Admin)) return Forbid();
-
-			_response = await notebookService.GetNotebooksAsync();
+			_response = await sectionService.GetSectionsAsync();
 			if (!_response.IsSucceed)
 				return NotFound(_response);
 
@@ -55,18 +50,18 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 		}
 	}
 
-	[HttpGet("{notebookId}", Name = "GetNotebookById")]
-	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
+	[HttpGet("{sectionId}", Name = "GetSectionById")]
+	[ResourceAuthorize(typeof(Section))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetNotebookById(int notebookId)
+	public async Task<IActionResult> GetSectionByIdAsync(int sectionId)
 	{
 		try
 		{
-			_response = await notebookService.GetNotebookByIdAsync(notebookId);
+			_response = await sectionService.GetSectionByIdAsync(sectionId);
 			if (!_response.IsSucceed)
 				return NotFound(_response);
 
@@ -81,13 +76,13 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 	}
 
 	[HttpPost]
-	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
+	[ResourceAuthorize(typeof(Section))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> CreateNotebookAsync([FromBody] CreateNotebookDto notebook)
+	public async Task<IActionResult> CreateAsync([FromBody] CreateSectionDto sectionDto)
 	{
 		try
 		{
@@ -103,13 +98,13 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 				return BadRequest(_response);
 			}
 
-			_response = await notebookService.CreateNotebookAsync(notebook);
+			_response = await sectionService.CreateSectionAsync(sectionDto);
 			if (!_response.IsSucceed)
 				return BadRequest(_response);
 
-			var createdNotebookId = (_response.Data as NotebookDto)!.Id;
+			var createdSectionId = (_response.Data as SectionDto)!.Id;
 
-			return CreatedAtRoute("GetNotebookById", new { notebookId = createdNotebookId }, _response);
+			return CreatedAtRoute("GetSectionById", new { sectionId = createdSectionId }, _response);
 		}
 		catch (Exception e)
 		{
@@ -119,15 +114,15 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 		}
 	}
 
-	[HttpPut("{notebookId}")]
-	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
+	[HttpPut("{sectionId}")]
+	[ResourceAuthorize(typeof(Section))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> UpdateNotebookAsync(int notebookId, [FromBody] UpdateNotebookDto notebookDto)
+	public async Task<IActionResult> UpdateAsync(int sectionId, [FromBody] UpdateSectionDto sectionDto)
 	{
 		try
 		{
@@ -143,7 +138,7 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 				return BadRequest(_response);
 			}
 
-			_response = await notebookService.UpdateNotebookAsync(notebookId, notebookDto);
+			_response = await sectionService.UpdateSectionAsync(sectionId, sectionDto);
 			if (!_response.IsSucceed)
 				return NotFound(_response);
 
@@ -157,18 +152,18 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 		}
 	}
 
-	[HttpDelete("{notebookId}")]
-	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
+	[HttpDelete("{sectionId}")]
+	[ResourceAuthorize(typeof(Section))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
 	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> DeleteNotebookAsync(int notebookId)
+	public async Task<IActionResult> DeleteAsync(int sectionId)
 	{
 		try
 		{
-			_response = await notebookService.DeleteNotebookAsync(notebookId);
+			_response = await sectionService.DeleteSectionAsync(sectionId);
 			if (!_response.IsSucceed)
 				return NotFound(_response);
 
