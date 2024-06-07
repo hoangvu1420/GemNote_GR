@@ -34,6 +34,7 @@ public class Program
 		// Add services to the container.
 		builder.Services.AddScoped<IAuthService, AuthService>();
 		builder.Services.AddScoped<INotebookService, NotebookService>();
+		builder.Services.AddScoped<ISectionService, SectionService>();
 
 		// Add states to the container.
 		builder.Services.AddScoped<UserState>();
