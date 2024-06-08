@@ -66,23 +66,15 @@
 				</FluentButton>
 			</FluentStack>
 
-			<FluentTreeView>
-				<FluentTreeItem>
-					Root item
-					<FluentTreeItem>
-						Flowers
-						<FluentTreeItem>Daisy</FluentTreeItem>
-						<FluentTreeItem>Sunflower</FluentTreeItem>
-						<FluentTreeItem>Rose</FluentTreeItem>
-					</FluentTreeItem>
-					<FluentTreeItem>
-						Planes
-						<FluentTreeItem>Tomcat</FluentTreeItem>
-						<FluentTreeItem>Hawker Harrier</FluentTreeItem>
-						<FluentTreeItem>Cesna</FluentTreeItem>
-					</FluentTreeItem>
-				</FluentTreeItem>
+			<FluentTreeView RenderCollapsedNodes=true>
+				<FluentTreeItem InitiallySelected="true">Daisy</FluentTreeItem>
+				<FluentTreeItem>Sunflower</FluentTreeItem>
+				<FluentTreeItem>Rose</FluentTreeItem>
+				<FluentDivider></FluentDivider>
+				<FluentTreeItem>Petunia</FluentTreeItem>
+				<FluentTreeItem>Tulip</FluentTreeItem>
 			</FluentTreeView>
+
 		</ChildContent>
 	</FluentAccordionItem>
 </div>

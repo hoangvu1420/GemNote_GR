@@ -11,121 +11,129 @@
 <PageTitle>Sign up</PageTitle>
 
 <style>
-	.container {
-		width: 80%;
-		height: 88vh;
+	.row-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.row-subcontainer {
 		margin: auto;
 		display: flex;
-		justify-content: center;
+		flex-direction: column;
 		align-items: center;
+	}
+
+	.card-container {
+		height: 90vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.card {
-		margin: 50px 0;
-		padding: 16px;
-		width: 70%;
-		height: 80%;
+		height: fit-content;
+		width: fit-content;
 		display: flex;
-		flex-direction: row;
-	}
-
-	.image-box {
-		margin-right: 1rem;
-		display: flex;
-		justify-content: center;
+		flex-direction: column;
 		align-items: center;
-		flex-shrink: 0;
 	}
 
-		.image-box > img {
-			height: 100%;
-			width: auto;
-			border-radius: 5px;
-		}
+	.form-img {
+		height: 100%;
+		max-height: 60vh;
+		margin-right: 1rem;
+		width: auto;
+		border-radius: 5px;
+	}
 
 	.form-box {
+		min-width: 350px;
 		flex-grow: 1;
-		margin-left: 1rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 	}
 </style>
-<div class="container">
 
-	<FluentCard AreaRestricted="false" Class="card">
-		<div class="image-box">
-			<img src="images/greencard2.png" alt="gem card image"/>
+<FluentGrid AdaptiveRendering="true" Justify="JustifyContent.Center" Class="grid-container">
+	<FluentGridItem xs="12" sm="7" Class="row-container">
+		<div class="card-container">
+			<FluentCard AreaRestricted="false" Class="card">
+				<FluentGrid AdaptiveRendering="true" Justify="JustifyContent.Center" Class="grid-container">
+					<FluentGridItem xs="12" sm="7" HiddenWhen="GridItemHidden.XsAndDown" Class="row-subcontainer">
+						<img class="form-img" src="images/greencard2.png" alt="gem card image" />
+					</FluentGridItem>
+					<FluentGridItem xs="12" sm="5" Class="row-subcontainer">
+						<div class="form-box">
+							<FluentLabel Typo="Typography.PageTitle" Style="align-self: center;">Sign up</FluentLabel>
+							<FluentLabel Style="margin-bottom: 1rem; margin-top: 0.5rem;">
+								Let's get started with GemNote
+							</FluentLabel>
+
+							<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry" novalidate>
+								<DataAnnotationsValidator />
+
+								<FluentTextField Name="email"
+												 Label="Email"
+												 @bind-Value="@Request.Email"
+												 Style="width: 100%"
+												 TextFieldType="TextFieldType.Email"
+												 Placeholder="john.doe@example.com"
+												 Required="true"
+												 Spellcheck="true" />
+								<FluentValidationMessage For="@(() => Request.Email)" />
+
+								<FluentTextField Name="password"
+												 Label="Password"
+												 Style="width: 100%"
+												 TextFieldType="TextFieldType.Password"
+												 Placeholder="●●●●●●●●"
+												 @bind-Value="@Request.Password"
+												 Required="true" />
+								<FluentValidationMessage For="@(() => Request.Password)" />
+
+								<FluentTextField Name="first_name"
+												 Label="First name"
+												 @bind-Value="@Request.FirstName"
+												 Style="width: 100%"
+												 Placeholder="John"
+												 Required />
+								<FluentValidationMessage For="@(() => Request.FirstName)" />
+
+								<FluentTextField Name="last_name"
+												 Label="Last name"
+												 @bind-Value="@Request.LastName"
+												 Style="width: 100%"
+												 Placeholder="Doe"
+												 Required="true" />
+								<FluentValidationMessage For="@(() => Request.LastName)" />
+
+								<FluentSelect Id="language"
+											  TOption="Country"
+											  Items="Countries"
+											  Label="Select your language"
+											  Width="100%"
+											  Height="200px"
+											  OptionValue="@(c => c.Code)"
+											  OptionText="@(c => c.Name)"
+											  @bind-value="@Request.Language"
+											  @bind-SelectedOption="@Country">
+								</FluentSelect>
+
+								<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
+									<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="_isLoading">Sign up</FluentButton>
+									<FluentProgressRing Visible="_isLoading"></FluentProgressRing>
+								</FluentStack>
+							</EditForm>
+						</div>
+					</FluentGridItem>
+				</FluentGrid>
+			</FluentCard>
 		</div>
-		<div class="form-box">
-			<FluentLabel Typo="Typography.PageTitle" Style="align-self: center;">Sign up</FluentLabel>
-			<FluentLabel Style="margin-bottom: 1rem; margin-top: 0.5rem;">
-				Let's get you all set up!
-			</FluentLabel>
-
-			<EditForm Model="@Request" OnValidSubmit="ValidHandlerAsync" FormName="register_entry" novalidate>
-				<DataAnnotationsValidator/>
-
-				<FluentTextField
-					Name="email"
-					Label="Email"
-					@bind-Value="@Request.Email"
-					Style="width: 100%"
-					TextFieldType="TextFieldType.Email"
-					Placeholder="john.doe@example.com"
-					Required="true"
-					Spellcheck="true"/>
-				<FluentValidationMessage For="@(() => Request.Email)"/>
-
-				<FluentTextField
-					Name="password"
-					Label="Password"
-					Style="width: 100%"
-					TextFieldType="TextFieldType.Password"
-					Placeholder="●●●●●●●●"
-					@bind-Value="@Request.Password"
-					Required="true"/>
-				<FluentValidationMessage For="@(() => Request.Password)"/>
-
-				<FluentTextField
-					Name="first_name"
-					Label="First name"
-					@bind-Value="@Request.FirstName"
-					Style="width: 100%"
-					Placeholder="John"
-					Required/>
-				<FluentValidationMessage For="@(() => Request.FirstName)"/>
-
-				<FluentTextField
-					Name="last_name"
-					Label="Last name"
-					@bind-Value="@Request.LastName"
-					Style="width: 100%"
-					Placeholder="Doe"
-					Required="true"/>
-				<FluentValidationMessage For="@(() => Request.LastName)"/>
-
-				<FluentSelect
-					Id="language"
-					TOption="Country"
-					Items="Countries"
-					Label="Select your language"
-					Width="100%"
-					Height="200px"
-					OptionValue="@(c => c.Code)"
-					OptionText="@(c => c.Name)"
-					@bind-value="@Request.Language"
-					@bind-SelectedOption="@Country">
-				</FluentSelect>
-
-				<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
-					<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="_isLoading">Sign up</FluentButton>
-					<FluentProgressRing Visible="_isLoading"></FluentProgressRing>
-				</FluentStack>
-			</EditForm>
-		</div>
-	</FluentCard>
-</div>
+	</FluentGridItem>
+</FluentGrid>
 
 @code {
 	[SupplyParameterFromForm] private RegisterRequest Request { get; set; } = new();

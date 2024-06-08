@@ -26,13 +26,23 @@
 					               Image="@UserState.AvatarUrl"
 					               ImageSize="35px">
 					</FluentPersona>
-					<FluentButton
-						Appearance="Appearance.Accent"
-						IconEnd="@(new Icons.Regular.Size16.DoorArrowRight())"
-						OnClick="Logout"
-						Style="margin-left: 1rem;">
-						Log out
+					<FluentButton id="actionButton"
+					              Appearance="Appearance.Accent"
+					              IconEnd="@(new Icons.Regular.Size16.ChevronDoubleDown())"
+					              @onclick="() => _visible = !_visible"
+					              Style="margin-left: 3px;">
 					</FluentButton>
+					<FluentMenu Anchor="actionButton" @bind-Open="_visible" VerticalThreshold="170">
+						<FluentMenuItem OnClick="Logout">
+							<FluentStack>
+								<FluentLabel Typo="Typography.Body">
+									Log out
+								</FluentLabel>
+								<FluentSpacer/>
+								<FluentIcon Value="@(new Icons.Regular.Size20.ArrowExit())"/>
+							</FluentStack>
+						</FluentMenuItem>
+					</FluentMenu>
 				</FluentStack>
 			</Authorized>
 			<NotAuthorized>
@@ -84,6 +94,7 @@
 </FluentLayout>
 
 @code {
+	private bool _visible = false;
 
 	protected override void OnInitialized()
 	{
