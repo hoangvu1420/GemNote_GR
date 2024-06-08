@@ -1,6 +1,8 @@
-﻿.container {
-    width: 80%;
+﻿.row-container {
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .page-title {

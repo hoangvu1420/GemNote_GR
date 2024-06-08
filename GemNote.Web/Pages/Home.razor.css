@@ -1,5 +1,4 @@
-﻿.container {
-    width: 80%;
+﻿.row-container {
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -10,12 +9,11 @@
     margin-top: 2rem;
     text-align: center;
     align-self: center;
-    width: fit-content;
+    width: 100%;
 }
 
 .image-container {
-    width: fit-content;
-    height: fit-content;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,34 +21,22 @@
     margin-top: 2rem;
 }
 
-.wall-image-guess {
-    width: 50vw;
+.wall-image {
+    width: 100%;
+    max-width: 1050px;
     height: auto;
     object-fit: cover;
     box-shadow: 0 0 15px #98f59f84;
     border-radius: 10px; 
 }
 
-.wall-image-guess:hover {
+.wall-image:hover {
     box-shadow: 0 0 40px #98f59f84;
-}
-
-.wall-image-user {
-    width: 40vw;
-    height: auto;
-    object-fit: cover;
-    box-shadow: 0 0 10px #98f59f84;
-    border-radius: 10px;
-}
-
-.wall-image-user:hover {
-    box-shadow: 0 0 20px #98f59f84;
 }
 
 .content {
     margin-top: 2rem;
+    text-align: center;
+    align-self: center;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }

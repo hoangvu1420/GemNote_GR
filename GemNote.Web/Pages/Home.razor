@@ -6,37 +6,39 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="container">
-	<AuthorizeView>
-		<NotAuthorized>
-			<div class="page-title">
-				<FluentLabel Typo="Typography.PageTitle">Welcome to GemNote - Your great tool for creating and learning flashcards</FluentLabel>
-			</div>
-			<div class="image-container">
-				<img class="wall-image-guess" src="images/wall-image2.webp" alt="wall image"/>
-			</div>
-			<div class="content">
-				<FluentLabel Typo="Typography.H4">
-					<FluentAnchor Href="login" Appearance="Appearance.Hypertext">Log in</FluentAnchor> or <FluentAnchor Href="register" Appearance="Appearance.Hypertext">sign up</FluentAnchor> to start creating your flashcards
-				</FluentLabel>
-			</div>
-		</NotAuthorized>
-		
-		<Authorized>
-			<div class="page-title">
-				<FluentLabel Typo="Typography.PageTitle">Welcome back!</FluentLabel>
-			</div>
-			<div class="image-container">
-				<img class="wall-image-user" src="images/wall-image2.webp" alt="wall image"/>
-			</div>
-			<div class="content">
-				<FluentLabel Typo="Typography.H4">
-					Ready for some learning? Start creating your flashcards now!
-				</FluentLabel>
-			</div>
-		</Authorized>
-	</AuthorizeView>
-</div>
+<FluentGrid AdaptiveRendering="true" Justify="JustifyContent.Center" Style="padding: 5px; " Class="grid-container">
+	<FluentGridItem xs="12" sm="8" Class="row-container">
+		<AuthorizeView>
+			<NotAuthorized>
+				<div class="page-title">
+					<FluentLabel Typo="Typography.PageTitle">Welcome to GemNote - Your great tool for creating and learning flashcards</FluentLabel>
+				</div>
+				<div class="image-container">
+					<img class="wall-image" src="images/wall-image2.webp" alt="wall image"/>
+				</div>
+				<div class="content">
+					<FluentLabel Typo="Typography.H4">
+						<FluentAnchor Href="login" Appearance="Appearance.Hypertext">Log in</FluentAnchor> or <FluentAnchor Href="register" Appearance="Appearance.Hypertext">sign up</FluentAnchor> to start creating your flashcards
+					</FluentLabel>
+				</div>
+			</NotAuthorized>
+
+			<Authorized>
+				<div class="page-title">
+					<FluentLabel Typo="Typography.PageTitle">Welcome back!</FluentLabel>
+				</div>
+				<div class="image-container">
+					<img class="wall-image" src="images/wall-image3.webp" alt="wall image"/>
+				</div>
+				<div class="content">
+					<FluentLabel Typo="Typography.H4">
+						Ready for some learning? Start creating your flashcards now!
+					</FluentLabel>
+				</div>
+			</Authorized>
+		</AuthorizeView>
+	</FluentGridItem>
+</FluentGrid>
 
 @code {
 
