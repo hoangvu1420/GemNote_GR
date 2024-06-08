@@ -9,7 +9,6 @@ namespace GemNote.API.Services.Implementations;
 
 public class SectionService(
 	ISectionRepository sectionRepository,
-	INotebookRepository notebookRepository,
 	IMapper mapper) : ISectionService
 {
 	public async Task<ApiResponse> GetSectionsAsync()
