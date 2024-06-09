@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GemNote.API.DTOs.FlashcardDtos;
+namespace GemNote.Web.ViewModels.FlashcardViewModels;
 
-public class UpdateFlashcardDto
+public class UpdateFlashcardVm
 {
 	public int Id { get; set; }
 	[Required]

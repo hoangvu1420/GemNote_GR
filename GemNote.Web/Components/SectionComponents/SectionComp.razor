@@ -1,7 +1,18 @@
 ﻿@using GemNote.Web.ViewModels.SectionViewModels
+@using GemNote.Web.ViewModels.UnitViewModels
+@using GemNote.Web.Services.Contracts
+@using Newtonsoft.Json
+@using System.Net
+@using GemNote.Web.Components.UnitComponents
+@using System.Diagnostics
+
+@inject IJSRuntime JsRuntime
 
 @inject IToastService ToastService
 @inject IDialogService DialogService
+
+@inject IUnitService UnitService
+@inject NavigationManager NavigationManager
 
 <style>
 	.container {
@@ -27,6 +38,13 @@
 	.acc-header-right {
 		display: flex;
 		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.top-bar {
+		margin-top: 0.5rem;
+		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	}
@@ -56,24 +74,47 @@
 		<ChildContent>
 			<FluentStack HorizontalAlignment="HorizontalAlignment.Right" Style="margin-bottom: 0.5rem;">
 				<FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())"
-							  Appearance="Appearance.Neutral"
-							  Title="Edit"
-							  OnClick="HandleEdit">
+				              Appearance="Appearance.Neutral"
+				              Title="Edit"
+				              OnClick="HandleEdit">
 				</FluentButton>
 
 				<FluentButton Title="Delete" OnClick="HandleDelete">
-					<FluentIcon Value="@(new Icons.Regular.Size16.Delete())" Color="Color.Error" />
+					<FluentIcon Value="@(new Icons.Regular.Size16.Delete())" Color="Color.Error"/>
 				</FluentButton>
 			</FluentStack>
+			@if (_isLoading)
+			{
+				<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
+					<FluentLabel Typo="Typography.H5">
+						Loading units...
+					</FluentLabel>
+					<FluentProgressRing></FluentProgressRing>
+				</FluentStack>
+			}
+			else
+			{
+				<div class="top-bar">
+					<FluentLabel Typo="Typography.H5">
+						@_message
+					</FluentLabel>
+					<FluentButton IconStart="@(new Icons.Regular.Size16.AddSquareMultiple())"
+					              Appearance="Appearance.Accent"
+					              Class="top-btn"
+					              OnClick="OpenCreateUnitDialogAsync">
+						Add unit
+					</FluentButton>
+				</div>
 
-			<FluentTreeView RenderCollapsedNodes=true>
-				<FluentTreeItem InitiallySelected="true">Daisy</FluentTreeItem>
-				<FluentTreeItem>Sunflower</FluentTreeItem>
-				<FluentTreeItem>Rose</FluentTreeItem>
-				<FluentDivider></FluentDivider>
-				<FluentTreeItem>Petunia</FluentTreeItem>
-				<FluentTreeItem>Tulip</FluentTreeItem>
-			</FluentTreeView>
+				<FluentNavMenu>
+					@foreach (var unit in Units)
+					{
+						<FluentNavLink Icon="@(new Icons.Regular.Size24.Bookmark())">
+							@unit?.Name
+						</FluentNavLink>
+					}
+				</FluentNavMenu>
+			}
 
 		</ChildContent>
 	</FluentAccordionItem>
@@ -84,11 +125,51 @@
 	[Parameter] public EventCallback<SectionVm> OnEdit { get; set; }
 	[Parameter] public EventCallback<SectionVm> OnDelete { get; set; }
 
-	private void OnExpanded(bool expanded)
+	public IEnumerable<UnitVm?> Units { get; set; } = [];
+	private bool _isLoading = false;
+	private string _message = string.Empty;
+
+	private async void OnExpanded(bool expanded)
 	{
 		if (expanded)
 		{
-			// Load sections
+			_isLoading = true;
+			StateHasChanged();
+
+			// Load Units
+			var (response, statusCode) = await UnitService.GetUnitsBySectionIdAsync(Section.Id);
+
+			switch (statusCode)
+			{
+				case HttpStatusCode.Unauthorized:
+					var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+					await dialog401.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+				case HttpStatusCode.Forbidden:
+					var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+					await dialog403.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+			}
+
+			if (response.IsSucceed)
+			{
+				Units = JsonConvert.DeserializeObject<List<UnitVm>>(response.Data!.ToString()!) ?? [];
+				_message = $"This section has {Units.Count()} units.";
+			}
+			else
+			{
+				_message = "This section has no unit.";
+			}
+
+			await JsRuntime.InvokeVoidAsync("logger.object", Units);
+
+			// stimulate 500ms loading
+			await Task.Delay(500);
+
+			_isLoading = false;
+			StateHasChanged();
 		}
 	}
 
@@ -107,4 +188,62 @@
 			await OnDelete.InvokeAsync(Section);
 		}
 	}
+
+	private async Task OpenCreateUnitDialogAsync()
+	{
+		var unit = new CreateUnitVm();
+
+		var dialog = await DialogService.ShowDialogAsync<CreateUnitComp>(unit, new DialogParameters()
+		{
+			Title = $"New unit in {Section.Name}",
+			OnDialogResult = DialogService.CreateDialogCallback(this, HandleCreateDialog),
+			Width = "500px",
+			Height = "fit-content",
+			TrapFocus = true,
+			Modal = true
+		});
+		await dialog.Result;
+	}
+
+	private async Task HandleCreateDialog(DialogResult result)
+	{
+		if (result.Cancelled)
+		{
+			ToastService.ShowError("Dialog cancelled");
+			return;
+		}
+
+		if (result.Data is not null)
+		{
+			CreateUnitVm createUnitVm = (result.Data as CreateUnitVm)!;
+			createUnitVm.SectionId = Section.Id;
+
+			var (response, statusCode) = await UnitService.CreateUnitAsync(createUnitVm);
+
+			switch (statusCode)
+			{
+				case HttpStatusCode.Unauthorized:
+					var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+					await dialog401.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+				case HttpStatusCode.Forbidden:
+					var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+					await dialog403.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+			}
+
+			if (response.IsSucceed)
+			{
+				Units = Units.Append(JsonConvert.DeserializeObject<UnitVm>(response.Data!.ToString()!));
+				ToastService.ShowSuccess("Unit created successfully");
+			}
+			else
+			{
+				ToastService.ShowError("Failed to create unit");
+			}
+		}
+	}
+
 }

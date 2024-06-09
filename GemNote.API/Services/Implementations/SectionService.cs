@@ -35,7 +35,7 @@ public class SectionService(
 	{
 		var response = new ApiResponse();
 
-		var sections = await sectionRepository.GetAllAsync(filter: s => s.NotebookId == notebookId);
+		var sections = await sectionRepository.GetAllAsync(filter: s => s.NotebookId == notebookId, includeProperties: "Notebook, Units");
 
 		var sectionList = sections.ToList();
 		if (!sectionList.Any())

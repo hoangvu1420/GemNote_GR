@@ -45,15 +45,15 @@
 			</FluentStack>
 
 			<div class="top-bar">
-					<FluentLabel Typo="Typography.H5">
-						@_message
-					</FluentLabel>
-					<FluentButton IconStart="@(new Icons.Regular.Size16.AddSquareMultiple())"
-					              Appearance="Appearance.Accent"
-					              Class="top-btn"
-					              OnClick="OpenCreateSectionDialogAsync">
-						Add section
-					</FluentButton>
+				<FluentLabel Typo="Typography.H5">
+					@_message
+				</FluentLabel>
+				<FluentButton IconStart="@(new Icons.Regular.Size16.AddSquareMultiple())"
+				              Appearance="Appearance.Accent"
+				              Class="top-btn"
+				              OnClick="OpenCreateSectionDialogAsync">
+					Add section
+				</FluentButton>
 			</div>
 
 			@foreach (var section in Sections)

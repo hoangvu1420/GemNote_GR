@@ -1,0 +1,36 @@
+﻿@page "/units/{UnitId}"
+
+<PageTitle>Resources</PageTitle>
+
+<FluentGrid AdaptiveRendering="true" Justify="JustifyContent.Center" Class="grid-container">
+	<FluentGridItem xs="12" sm="8" Class="row-container">
+		<div class="page-title">
+			<FluentLabel Typo="Typography.PageTitle">Resources</FluentLabel>
+		</div>
+		<div class="page-content">
+			@if (_isLoading)
+			{
+				<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
+					<FluentLabel Typo="Typography.H5">
+						Loading resources...
+					</FluentLabel>
+					<FluentProgressRing></FluentProgressRing>
+				</FluentStack>
+			}
+			else
+			{
+				<div class="top-bar">
+					<FluentLabel Typo="Typography.H5" Class="top-label">
+						@_description
+					</FluentLabel>
+					@* <FluentButton IconStart="@(new Icons.Regular.Size16.AddSquareMultiple())" *@
+					@* 			  Appearance="Appearance.Accent" *@
+					@* 			  Class="top-btn" *@
+					@* 			  OnClick="OpenCreateNotebookDialogAsync"> *@
+					@* 	Create new notebook *@
+					@* </FluentButton> *@
+				</div>
+			}
+		</div>
+	</FluentGridItem>
+</FluentGrid>

@@ -1,0 +1,81 @@
+﻿@using GemNote.Web.ViewModels.UnitViewModels
+
+@implements IDialogContentComponent<CreateUnitVm>
+
+<style>
+	.field {
+		width: 100%;
+	}
+</style>
+
+<FluentDialogHeader>
+	<FluentStack VerticalAlignment="VerticalAlignment.Center">
+		<FluentIcon Value="@(new Icons.Regular.Size24.AddSquare())" />
+		<FluentLabel Typo="Typography.PaneHeader">
+			@Dialog.Instance.Parameters.Title
+		</FluentLabel>
+	</FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+	<EditForm EditContext="@_editContext" FormName="create-update-nb" novalidate>
+		<DataAnnotationsValidator />
+
+		<FluentStack Orientation="Orientation.Vertical">
+			<FluentTextField @bind-Value="@Content.Name"
+			                 Name="name"
+			                 Class="field"
+			                 Label="Name"
+			                 TextFieldType="TextFieldType.Text"
+			                 Placeholder="Enter unit name"
+			                 Required />
+			<FluentValidationMessage For="@(() => Content.Name)" />
+
+			<FluentTextArea @bind-Value="@Content.Description"
+			                Name="description"
+			                Class="field"
+			                Label="Description"
+			                Placeholder="Enter unit description (optional)" />
+		</FluentStack>
+	</EditForm>
+</FluentDialogBody>
+
+<FluentDialogFooter>
+	<FluentButton Appearance="Appearance.Accent"
+	              Disabled="@(!_editContext.Validate())"
+	              OnClick="@SaveAsync">
+		Save
+	</FluentButton>
+	<FluentButton Appearance="Appearance.Neutral"
+	              OnClick="@CancelAsync">
+		Cancel
+	</FluentButton>
+</FluentDialogFooter>
+
+@code {
+	[Parameter]
+	public CreateUnitVm Content { get; set; } = null!;
+
+	private EditContext _editContext = default!;
+
+	[CascadingParameter]
+	public FluentDialog Dialog { get; set; } = default!;
+
+	protected override void OnInitialized()
+	{
+		_editContext = new EditContext(Content);
+	}
+
+	private async Task SaveAsync()
+	{
+		if (_editContext.Validate())
+		{
+			await Dialog.CloseAsync(Content);
+		}
+	}
+
+	private async Task CancelAsync()
+	{
+		await Dialog.CancelAsync();
+	}
+}
