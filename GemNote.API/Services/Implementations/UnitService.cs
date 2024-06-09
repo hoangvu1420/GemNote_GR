@@ -35,7 +35,7 @@ public class UnitService(
 	{
 		var response = new ApiResponse();
 
-		var units = await unitRepository.GetAllAsync(filter: u => u.SectionId == sectionId);
+		var units = await unitRepository.GetAllAsync(filter: u => u.SectionId == sectionId, includeProperties: "Section, Flashcards");
 
 		var unitList = units.ToList();
 		if (!unitList.Any())
@@ -55,7 +55,7 @@ public class UnitService(
 	{
 		var response = new ApiResponse();
 
-		var unit = await unitRepository.GetAsync(filter: u => u.Id == id);
+		var unit = await unitRepository.GetAsync(filter: u => u.Id == id, includeProperties: "Section, Flashcards");
 
 		if (unit == null)
 		{
