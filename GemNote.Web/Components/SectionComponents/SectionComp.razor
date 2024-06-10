@@ -109,8 +109,16 @@
 				<FluentNavMenu>
 					@foreach (var unit in Units)
 					{
-						<FluentNavLink Icon="@(new Icons.Regular.Size24.Bookmark())">
-							@unit?.Name
+						<FluentNavLink Href="@($"/units/{unit?.Id.ToString()}")" Icon="@(new Icons.Regular.Size24.Bookmark())">
+							<FluentStack>
+								<FluentLabel Typo="Typography.H5">
+									@(unit?.Name)
+								</FluentLabel>
+								<FluentSpacer/>
+								<FluentLabel Typo="Typography.Body">
+									@(unit?.CardQty) flashcards
+								</FluentLabel>
+							</FluentStack>
 						</FluentNavLink>
 					}
 				</FluentNavMenu>
@@ -218,7 +226,9 @@
 			CreateUnitVm createUnitVm = (result.Data as CreateUnitVm)!;
 			createUnitVm.SectionId = Section.Id;
 
+			await JsRuntime.InvokeVoidAsync("logger.object", createUnitVm);
 			var (response, statusCode) = await UnitService.CreateUnitAsync(createUnitVm);
+			await JsRuntime.InvokeVoidAsync("logger.object", response);
 
 			switch (statusCode)
 			{

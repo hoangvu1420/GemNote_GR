@@ -5,105 +5,164 @@
 @inject IDialogService DialogService
 @inject IToastService ToastService
 
+@inject IKeyCodeService KeyCodeService
+@implements IAsyncDisposable
 
 <style>
-	.container {
-		width: 80%;
-		margin: auto;
+	.full-width,
+	.full-width fluent-card {
+		width: 600px;
+		height: 300px;
+		cursor: pointer;
+		transition: background-color 0.5s ease-in-out;
 	}
 
-	.acc-item {
-		background-color: #f4f4f4;
+		.full-width fluent-card:hover {
+			background-color: #373A40;
+		}
+
+	fluent-card {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.key-code {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		border: 1px solid #ccc;
+		padding: 10px;
+	}
+
+	li > span {
+		float: left;
+		width: 70px;
+		font-weight: bold;
 	}
 </style>
 
-<div class="container">
-    <p>
-        When 'Modal' is checked, the dialog can be <em>dismissed</em> by clicking outside the dialog (anywhere on the overlay). When unchecked,
-        the dialog can be <em>dismissed</em> only by the 'ESC' key.<br />The dialog can always be <em>closed</em> by using the 'Close dialog'
-        button.
-    </p>
-    <p>
-        When 'Trap focus' is checked, only the elements within the dialog will receive focus. When unchecked, focus will also move outside the
-        dialog.
-    </p>
-    <p>
-        When 'Prevent scroll' is checked, the body of the page will not be scrollable when the dialog is shown.
-    </p>
-    <p>
-        Hidden is bound to dialog visibility. You can show/hide dialog by changing this property or calling <code>Show()</code> / <code>Hide()</code>
-        on component reference.
-    </p>
-    <FluentCheckbox Name="modal" @bind-Value="_modal">
-        Modal
-    </FluentCheckbox>
-    <FluentCheckbox Name="trap" @bind-Value="_trapFocus">
-        Trap focus
-    </FluentCheckbox>
-    <FluentCheckbox Name="prevent" @bind-Value="_preventScroll">
-        Prevent scroll
-    </FluentCheckbox>
-    <FluentCheckbox Name="hidden" @bind-Value="Hidden" ReadOnly="true">
-        Hidden
-    </FluentCheckbox>
-	<div>
-		<FluentDialog @ref="_myFluentDialog" 
-		              @bind-Hidden="@Hidden" 
-		              aria-label="Simple dialog" 
-		              Modal=@_modal 
-		              TrapFocus=@_trapFocus 
-		              PreventScroll=@_preventScroll @ondialogdismiss=OnDismiss>
-	        <FluentDialogHeader Visible="false" />
-	        <h2>Just a simple dialog</h2>
-	        <p>The 'Close dialog' button is automatically focused.</p>
-	        <p>The 'Another button' doesn't do anything other than showing it can receive focus.</p>
-	        <p>The width, height and padding of the dialog are customized in (isolated) CSS</p>
-	        <FluentButton Appearance="Appearance.Accent" Autofocus="true" @onclick="OnClose">Close dialog</FluentButton>
-	        <FluentButton>Another button</FluentButton>
+<FluentStack>
+	<div class="key-code">
+		<FluentHorizontalScroll
+			@ref="_horizontalScroll"
+			class="full-width" Speed="1000"
+			Easing="ScrollEasing.EaseInOut">
 
-	    </FluentDialog>
+			<FluentCard Id="card1">
+				<FluentLabel Typo="Typography.Header">
+					Card 1
+				</FluentLabel>
+			</FluentCard>
+			<FluentCard Id="card2">
+				<FluentLabel Typo="Typography.Header">
+					Card 2
+				</FluentLabel>
+			</FluentCard>
+			<FluentCard Id="card3">
+				<FluentLabel Typo="Typography.Header">
+					Card 3
+				</FluentLabel>
+			</FluentCard>
+			<FluentCard Id="card4">
+				<FluentLabel Typo="Typography.Header">
+					Card 4
+				</FluentLabel>
+			</FluentCard>
+			<FluentCard Id="card5">
+				<FluentLabel Typo="Typography.Header">
+					Card 5
+				</FluentLabel>
+			</FluentCard>
+		</FluentHorizontalScroll>
 	</div>
 
-	<p>Status: @_status</p>
-	<FluentButton Appearance=Appearance.Accent @onclick="OnOpen">Open dialog</FluentButton>
-</div>
+	<ul>
+		<li>
+			<span>Value:</span> <code>@LastKeyCode?.Value</code>
+		</li>
+		<li>
+			<span>Key:</span> <code>@LastKeyCode?.Key.ToString()</code>
+		</li>
+		<li>
+			<span>Code:</span> <code>@LastKeyCode?.KeyCode</code>
+		</li>
+		<li>
+			<span>Meta:</span>
+			@if (LastKeyCode?.ShiftKey == true)
+			{
+				<FluentIcon Value="@(new Icons.Filled.Size20.KeyboardShift())"/>
+			}
+			else
+			{
+				<FluentIcon Value="@(new Icons.Regular.Size20.KeyboardShift())" Color="Color.Neutral"/>
+			}
+			@if (LastKeyCode?.CtrlKey == true)
+			{
+				<FluentIcon Value="@(new Icons.Filled.Size20.ControlButton())"/>
+			}
+			else
+			{
+				<FluentIcon Value="@(new Icons.Regular.Size20.ControlButton())" Color="Color.Neutral"/>
+			}
+			@if (LastKeyCode?.AltKey == true)
+			{
+				<FluentIcon Value="@(new Icons.Filled.Size20.KeyCommand())"/>
+			}
+			else
+			{
+				<FluentIcon Value="@(new Icons.Regular.Size20.KeyCommand())" Color="Color.Neutral"/>
+			}
+			@if (LastKeyCode?.MetaKey == true)
+			{
+				<FluentIcon Value="@(new Icons.Filled.Size20.ArrowBounce())"/>
+			}
+			else
+			{
+				<FluentIcon Value="@(new Icons.Regular.Size20.ArrowBounce())" Color="Color.Neutral"/>
+			}
+		</li>
+		<li>
+			<span>Location:</span> <code>@LastKeyCode?.Location.ToString()</code>
+		</li>
+		<li>
+			<span>TargetId:</span> <code>@LastKeyCode?.TargetId</code>
+		</li>
+	</ul>
+</FluentStack>
 
+@code
+{
+	FluentKeyCodeEventArgs? LastKeyCode;
+	FluentHorizontalScroll _horizontalScroll = default!;
 
-@code {
-    private FluentDialog? _myFluentDialog;
-    private bool _trapFocus = true;
-    private bool _modal = true;
-    private bool _preventScroll = true;
-    private string? _status;
-    private bool Hidden { get; set; } = true;
+	protected override void OnInitialized()
+	{
+		KeyCodeService.RegisterListener(OnKeyDownAsync);
+	}
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-            _myFluentDialog!.Hide();
-    }
+	private Task OnKeyDownAsync(FluentKeyCodeEventArgs key)
+	{
+		LastKeyCode = key;
+		StateHasChanged();
+		switch (key.KeyCode)
+		{
+			case 39:
+				_horizontalScroll.ScrollToNext();
+				break;
+			case 37:
+				_horizontalScroll.ScrollToPrevious();
+				break;
+		}
 
-    private void OnOpen()
-    {
-        _status = "Dialog opened with button click";
-        _myFluentDialog!.Show();
-        ToastService.ShowSuccess(_status);
-    }
+		return Task.CompletedTask;
+	}
 
-    private void OnClose()
-    {
-        _status = $"Dialog dismissed with reason: Close button clicked";
-        _myFluentDialog!.Hide();
-        ToastService.ShowSuccess(_status);
-    }
-
-    private void OnDismiss(DialogEventArgs args)
-    {
-        if (args is not null && args.Reason is not null && args.Reason == "dismiss")
-        {
-            _status = $"Dialog dismissed with reason: {args.Reason}";
-            _myFluentDialog!.Hide();
-            ToastService.ShowSuccess(_status);
-        }
-    }
+	public ValueTask DisposeAsync()
+	{
+		KeyCodeService.UnregisterListener(OnKeyDownAsync);
+		return ValueTask.CompletedTask;
+	}
 }

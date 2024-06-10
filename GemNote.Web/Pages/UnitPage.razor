@@ -1,34 +1,120 @@
 ﻿@page "/units/{UnitId}"
 
-<PageTitle>Resources</PageTitle>
+<PageTitle>Unit</PageTitle>
+
+<style>
+	.full-width,
+	.full-width fluent-card {
+		width: 600px;
+		max-width: 100%;
+		height: 300px;
+		cursor: pointer;
+		transition: background-color 0.5s ease-in-out;
+	}
+
+		.full-width fluent-card:hover {
+			background-color: #373A40;
+		}
+
+	fluent-card {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.page-content {
+		width: 100%;
+	}
+
+	.cards-container {
+		margin-top: 1rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+</style>
 
 <FluentGrid AdaptiveRendering="true" Justify="JustifyContent.Center" Class="grid-container">
 	<FluentGridItem xs="12" sm="8" Class="row-container">
-		<div class="page-title">
-			<FluentLabel Typo="Typography.PageTitle">Resources</FluentLabel>
-		</div>
 		<div class="page-content">
 			@if (_isLoading)
 			{
 				<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
 					<FluentLabel Typo="Typography.H5">
-						Loading resources...
+						Loading unit...
 					</FluentLabel>
 					<FluentProgressRing></FluentProgressRing>
 				</FluentStack>
 			}
 			else
 			{
+				<FluentStack Style="margin-top: 1rem; margin-bottom: 0.5rem;">
+					<FluentBreadcrumb>
+						<FluentBreadcrumbItem Href="/resources">
+							<FluentLabel Typo="Typography.H4" Color="Color.Neutral">
+								@(_unit.NotebookName)
+							</FluentLabel>
+							<FluentIcon Value="@(new Icons.Regular.Size20.ChevronDoubleRight())" Color="@Color.Neutral" Slot="separator"/>
+						</FluentBreadcrumbItem>
+						<FluentBreadcrumbItem Href="/resources">
+							<FluentLabel Typo="Typography.H4" Color="Color.Neutral">
+								@(_unit.SectionName)
+							</FluentLabel>
+							<FluentIcon Value="@(new Icons.Regular.Size20.ChevronDoubleRight())" Color="@Color.Neutral" Slot="separator"/>
+						</FluentBreadcrumbItem>
+						<FluentBreadcrumbItem>
+							<FluentLabel Typo="Typography.H3" Color="Color.Accent">
+								@(_unit.Name)
+							</FluentLabel>
+							<FluentIcon Value="@(new Icons.Regular.Size20.ChevronDoubleRight())" Color="@Color.Neutral" Slot="separator"/>
+						</FluentBreadcrumbItem>
+					</FluentBreadcrumb>
+
+					<FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())"
+					              Appearance="Appearance.Neutral"
+					              Title="Edit"
+					              OnClick="HandleEditUnit">
+					</FluentButton>
+
+					<FluentButton Title="Delete" OnClick="HandleDeleteUnit">
+						<FluentIcon Value="@(new Icons.Regular.Size16.Delete())" Color="Color.Error"/>
+					</FluentButton>
+				</FluentStack>
+				
 				<div class="top-bar">
-					<FluentLabel Typo="Typography.H5" Class="top-label">
-						@_description
+					<FluentLabel Typo="Typography.Body" Class="top-label" Style="font-style: italic;">
+						@(_description)
 					</FluentLabel>
-					@* <FluentButton IconStart="@(new Icons.Regular.Size16.AddSquareMultiple())" *@
-					@* 			  Appearance="Appearance.Accent" *@
-					@* 			  Class="top-btn" *@
-					@* 			  OnClick="OpenCreateNotebookDialogAsync"> *@
-					@* 	Create new notebook *@
-					@* </FluentButton> *@
+					<FluentLabel Typo="Typography.H5" Class="top-label" Style="margin-top: 1rem;">
+						@(_message)
+					</FluentLabel>
+				</div>
+				<div class="cards-container">
+					<FluentHorizontalScroll
+						@ref="_horizontalScroll"
+						class="full-width" Speed="1000"
+						Easing="ScrollEasing.EaseInOut">
+						@foreach (var card in _unit.Flashcards)
+						{
+							<FluentCard
+								Id="@($"card{card?.Id.ToString()}")"
+								@onclick="() => HandleCardClicked(card!.Id)">
+								@if (_isCardFlipped[card!.Id])
+								{
+									<FluentLabel Typo="Typography.Subject">
+										@card?.Back
+									</FluentLabel>
+								}
+								else
+								{
+									<FluentLabel Typo="Typography.Header">
+										@card?.Front
+									</FluentLabel>
+								}
+							</FluentCard>
+						}
+					</FluentHorizontalScroll>
 				</div>
 			}
 		</div>
