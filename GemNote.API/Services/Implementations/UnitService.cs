@@ -9,13 +9,14 @@ namespace GemNote.API.Services.Implementations;
 
 public class UnitService(
 	IUnitRepository unitRepository,
+	ISectionRepository sectionRepository,
 	IMapper mapper) : IUnitService
 {
 	public async Task<ApiResponse> GetUnitsAsync()
 	{
 		var response = new ApiResponse();
 
-		var units = await unitRepository.GetAllAsync(includeProperties: "Section, Flashcards");
+		var units = await unitRepository.GetAllAsync(includeProperties: "Flashcards");
 
 		var unitList = units.ToList();
 		if (!unitList.Any())
@@ -35,7 +36,7 @@ public class UnitService(
 	{
 		var response = new ApiResponse();
 
-		var units = await unitRepository.GetAllAsync(filter: u => u.SectionId == sectionId, includeProperties: "Section, Flashcards");
+		var units = await unitRepository.GetAllAsync(filter: u => u.SectionId == sectionId, includeProperties: "Flashcards");
 
 		var unitList = units.ToList();
 		if (!unitList.Any())
@@ -55,7 +56,7 @@ public class UnitService(
 	{
 		var response = new ApiResponse();
 
-		var unit = await unitRepository.GetAsync(filter: u => u.Id == id, includeProperties: "Section, Flashcards");
+		var unit = await unitRepository.GetAsync(filter: u => u.Id == id, includeProperties: "Section, Section.Notebook, Flashcards");
 
 		if (unit == null)
 		{
@@ -65,7 +66,7 @@ public class UnitService(
 		}
 
 		response.IsSucceed = true;
-		response.Data = mapper.Map<UnitDto>(unit);
+		response.Data = mapper.Map<DetailedUnitDto>(unit);
 
 		return response;
 	}
@@ -75,7 +76,7 @@ public class UnitService(
 		var response = new ApiResponse();
 
 		var unit = mapper.Map<Unit>(unitDto);
-		if (!await unitRepository.ExistsAsync(u => u.SectionId == unit.SectionId))
+		if (!await sectionRepository.ExistsAsync(u => u.Id == unit.SectionId))
 		{
 			response.IsSucceed = false;
 			response.ErrorMessages = ["Section not found"];
