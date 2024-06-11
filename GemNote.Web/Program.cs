@@ -3,6 +3,7 @@ using GemNote.Web.Authentication;
 using GemNote.Web.Services.Contracts;
 using GemNote.Web.Services.Implementations;
 using GemNote.Web.States;
+using GemNote.Web.StaticDetails;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -22,7 +23,7 @@ public class Program
 		builder.Services.AddTransient<AuthenticationMessageHandler>();
 		builder.Services.AddHttpClient("ServerApi", client =>
 		{
-			client.BaseAddress = new Uri("https://localhost:7214/");
+			client.BaseAddress = new Uri(ApiUri.DevelopmentUri);
 		}).AddHttpMessageHandler<AuthenticationMessageHandler>();
 
 		builder.Services.AddFluentUIComponents();

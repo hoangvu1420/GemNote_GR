@@ -1,12 +1,10 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Net.Http.Headers;
-using System.Net.Http;
 using System.Security.Claims;
 
 namespace GemNote.Web.Authentication;
 
-public class CustomAuthenticationStateProvider(ILocalStorageService localStorageService, HttpClient httpClient)
+public class CustomAuthenticationStateProvider(ILocalStorageService localStorageService)
 	: AuthenticationStateProvider
 {
 	private readonly ClaimsPrincipal _anonymous = new(new ClaimsIdentity());
