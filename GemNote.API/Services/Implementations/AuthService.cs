@@ -138,7 +138,7 @@ public class AuthService(
 		var jwtTokenHandler = new JwtSecurityTokenHandler();
 		var key = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"]);
 
-		var expirationDate = DateTime.Now.AddMinutes(15);
+		var expirationDate = DateTime.Now.AddMinutes(10);
 
 		var tokenObject = new JwtSecurityToken(
 			issuer: configuration["JWT:Issuer"],
