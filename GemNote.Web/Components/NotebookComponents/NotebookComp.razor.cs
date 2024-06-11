@@ -215,6 +215,7 @@ public partial class NotebookComp
 			if (response.IsSucceed)
 			{
 				Sections = Sections.Where(n => n!.Id != section.Id).ToList();
+				_message = $"This notebook has {Sections.Count()} sections.";
 				ToastService.ShowSuccess("Section deleted successfully");
 			}
 			else

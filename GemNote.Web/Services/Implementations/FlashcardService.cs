@@ -172,7 +172,7 @@ public class FlashcardService(IHttpClientFactory httpClientFactory) : IFlashcard
 	{
 		try
 		{
-			var response = await _httpClient.PutAsJsonAsync("api/flashcards", flashcardVm);
+			var response = await _httpClient.PutAsJsonAsync($"api/flashcards/{flashcardVm.Id}", flashcardVm);
 
 			if (!response.IsSuccessStatusCode)
 			{

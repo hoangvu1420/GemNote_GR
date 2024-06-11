@@ -1,0 +1,125 @@
+﻿@using GemNote.Web.ViewModels.FlashcardViewModels
+
+@inject IJSRuntime JsRuntime
+
+<style>
+	.card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.demopanel {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+        .demopanel textarea {
+            width: 100%;
+			background: var(--neutral-fill-layer-alt-rest);
+            color: white;
+            text-align: center;
+            border: 1px solid var(--accent-fill-rest);
+            font-size: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+		}
+</style>
+
+<FluentStack Style="width: 100%; margin: 10px auto;">
+	<FluentSplitter Orientation="Orientation.Horizontal" Panel1Size="25%" Style="width: 100%;">
+		<Panel1>
+			<div class="demopanel">
+				<textarea @ref="_frontTextarea" 
+					@bind="Flashcard.Front" 
+					@oninput="HandleFrontInput" 
+					@onblur="HandleFrontContentChange" 
+					spellcheck="false" 
+					placeholder="Front"
+					rows="6"></textarea>
+			</div>
+		</Panel1>
+		<Panel2>
+			<div class="demopanel">
+				<textarea @ref="_backTextarea" 
+					@bind="Flashcard.Back" 
+					@oninput="HandleBackInput" 
+					@onblur="HandleBackContentChange" 
+					spellcheck="false" 
+					placeholder="Back"
+					rows="6"></textarea>
+			</div>
+		</Panel2>
+	</FluentSplitter>
+	<FluentButton Title="Delete" OnClick="HandleDelete">
+		<FluentIcon Value="@(new Icons.Regular.Size20.Delete())" Color="Color.Error"/>
+	</FluentButton>
+</FluentStack>
+
+@code {
+	[Parameter] public FlashcardVm Flashcard { get; set; } = null!;
+	[Parameter] public EventCallback<UpdateFlashcardVm> OnEdit { get; set; }
+	[Parameter] public EventCallback<int> OnDelete { get; set; }
+
+	private string? _previousFrontContent;
+	private string? _previousBackContent;
+
+	private ElementReference _frontTextarea;
+	private ElementReference _backTextarea;
+
+	protected override void OnInitialized()
+	{
+		_previousFrontContent = Flashcard.Front;
+		_previousBackContent = Flashcard.Back;
+	}
+
+	private async void HandleFrontContentChange(FocusEventArgs e)
+	{
+		if (Flashcard.Front == _previousFrontContent) return;
+
+		_previousFrontContent = Flashcard.Front;
+		await OnEdit.InvokeAsync(new UpdateFlashcardVm
+		{
+			Id = Flashcard.Id, 
+			Front = Flashcard.Front,
+			Back = Flashcard.Back
+		});
+	}
+
+	private async void HandleBackContentChange(FocusEventArgs e)
+	{
+		if (!OnEdit.HasDelegate) return;
+		if (Flashcard.Back == _previousBackContent) return;
+
+		_previousBackContent = Flashcard.Back;
+		await OnEdit.InvokeAsync(new UpdateFlashcardVm
+		{
+			Id = Flashcard.Id, 
+			Front = Flashcard.Front, 
+			Back = Flashcard.Back
+		});
+	}
+
+	private async void HandleDelete()
+	{
+		if (OnDelete.HasDelegate)
+		{
+			await OnDelete.InvokeAsync(Flashcard.Id);
+		}
+	}
+
+	private async Task HandleFrontInput(ChangeEventArgs e)
+	{
+		await JsRuntime.InvokeVoidAsync("editorInterop.autoExpand", _frontTextarea);
+	}
+
+	private async Task HandleBackInput(ChangeEventArgs e)
+	{
+		await JsRuntime.InvokeVoidAsync("editorInterop.autoExpand", _backTextarea);
+	}
+
+}

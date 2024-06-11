@@ -1,5 +1,7 @@
 ﻿@page "/units/{UnitId}"
 
+@using GemNote.Web.Components.FlashcardComponents
+
 <PageTitle>Unit</PageTitle>
 
 <style>
@@ -26,11 +28,20 @@
 		width: 100%;
 	}
 
-	.cards-container {
+	.scroll-container {
+		width: 100%;
 		margin-top: 1rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
+	}
+
+	.cards-container {
+		width: 100%;
+		margin-top: 1rem;
+		display: flex;
+		flex-wrap: wrap;
 		justify-content: center;
 	}
 </style>
@@ -81,41 +92,72 @@
 						<FluentIcon Value="@(new Icons.Regular.Size16.Delete())" Color="Color.Error"/>
 					</FluentButton>
 				</FluentStack>
-				
-				<div class="top-bar">
-					<FluentLabel Typo="Typography.Body" Class="top-label" Style="font-style: italic;">
-						@(_description)
-					</FluentLabel>
-					<FluentLabel Typo="Typography.H5" Class="top-label" Style="margin-top: 1rem;">
-						@(_message)
-					</FluentLabel>
-				</div>
-				<div class="cards-container">
-					<FluentHorizontalScroll
-						@ref="_horizontalScroll"
-						class="full-width" Speed="1000"
-						Easing="ScrollEasing.EaseInOut">
+
+				<FluentStack Orientation="Orientation.Vertical">
+					<div class="top-bar">
+						<FluentLabel Typo="Typography.Body" Class="top-label" Style="font-style: italic;">
+							@(_description)
+						</FluentLabel>
+						<FluentLabel Typo="Typography.H5" Class="top-label" Style="margin-top: 1rem;">
+							@(_message)
+						</FluentLabel>
+					</div>
+					<div class="scroll-container">
+						<FluentHorizontalScroll
+							FlippersHiddenFromAt="true"
+							@ref="_horizontalScroll"
+							class="full-width" Speed="1000"
+							Easing="ScrollEasing.EaseInOut">
+							@foreach (var card in _unit.Flashcards)
+							{
+								<FluentCard
+									Id="@($"card{card?.Id.ToString()}")"
+									@onclick="() => HandleCardClicked(card!.Id)">
+									@if (_isCardFlipped[card!.Id])
+									{
+										<FluentLabel Typo="Typography.Subject">
+											@card?.Back
+										</FluentLabel>
+									}
+									else
+									{
+										<FluentLabel Typo="Typography.Header">
+											@card?.Front
+										</FluentLabel>
+									}
+								</FluentCard>
+							}
+						</FluentHorizontalScroll>
+						<FluentStack HorizontalAlignment="HorizontalAlignment.Center" Style="margin-top: 0.5rem;">
+							<FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowLeft())"
+							              Title="Previous card" 
+							              OnClick="HandlePreviousCard"/>
+							<FluentLabel Typo="Typography.Subject">
+								@(_currentCardIndex)/@(_unit.Flashcards.Count())
+							</FluentLabel>
+							<FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowRight())"
+							              Title="Next card" 
+							              OnClick="HandleNextCard" />
+						</FluentStack>
+					</div>
+					<div class="cards-container">
+						<FluentLabel Typo="Typography.H4" Style="width: 100%;">
+							Flashcards
+						</FluentLabel>
 						@foreach (var card in _unit.Flashcards)
 						{
-							<FluentCard
-								Id="@($"card{card?.Id.ToString()}")"
-								@onclick="() => HandleCardClicked(card!.Id)">
-								@if (_isCardFlipped[card!.Id])
-								{
-									<FluentLabel Typo="Typography.Subject">
-										@card?.Back
-									</FluentLabel>
-								}
-								else
-								{
-									<FluentLabel Typo="Typography.Header">
-										@card?.Front
-									</FluentLabel>
-								}
-							</FluentCard>
+							<FlashcardComp Flashcard="card"
+							               OnEdit="HandleEditFlashcard"
+							               OnDelete="HandleDeleteFlashcard"/>
 						}
-					</FluentHorizontalScroll>
-				</div>
+						<FluentButton Appearance="Appearance.Accent"
+						              IconStart="@(new Icons.Regular.Size20.AddSquareMultiple())"
+						              OnClick="HandleCreateFlashcard"
+						              Style="width: 50%;">
+							Add flashcard
+						</FluentButton>
+					</div>
+				</FluentStack>
 			}
 		</div>
 	</FluentGridItem>

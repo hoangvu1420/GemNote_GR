@@ -26,13 +26,13 @@
     max-width: 1050px;
     height: auto;
     object-fit: cover;
-    box-shadow: 0 0 15px #98f59f84;
-    border-radius: 10px; 
+    box-shadow: 0 0 15px var(--accent-fill-active);
+    border-radius: 10px;
 }
 
-.wall-image:hover {
-    box-shadow: 0 0 40px #98f59f84;
-}
+    .wall-image:hover {
+        box-shadow: 0 0 40px var(--accent-fill-active);
+    }
 
 .content {
     margin-top: 2rem;

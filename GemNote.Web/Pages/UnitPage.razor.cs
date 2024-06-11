@@ -35,6 +35,7 @@ public partial class UnitPage : IAsyncDisposable
 
 	private DetailedUnitVm _unit = new();
 	private Dictionary<int, bool> _isCardFlipped = new();
+	private int _currentCardIndex = 1;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -69,7 +70,9 @@ public partial class UnitPage : IAsyncDisposable
 		{
 			_unit = JsonConvert.DeserializeObject<DetailedUnitVm>(response.Data!.ToString()!)!;
 			_description = _unit.Description;
-			_message = _unit.CardQty > 0 ? $"This unit has {_unit.CardQty} flashcards." : "This unit has no flashcards.";
+			_message = _unit.CardQty > 0
+				? $"This unit has {_unit.CardQty} flashcards."
+				: "This unit has no flashcards.";
 			_isCardFlipped = _unit.Flashcards.ToDictionary(card => card.Id, card => false);
 
 			await JsRuntime.InvokeVoidAsync("logger.object", _unit.Flashcards);
@@ -91,28 +94,58 @@ public partial class UnitPage : IAsyncDisposable
 		}
 	}
 
-    private async Task<ValueTask> OnKeyDownAsync(FluentKeyCodeEventArgs key)
-    {
-	    await JsRuntime.InvokeVoidAsync("logger.info", key.Value);
+	private void HandlePreviousCard()
+	{
+		ScrollToPrevious();
+	}
+
+	private void HandleNextCard()
+	{
+		ScrollToNext();
+	}
+
+	private void ScrollToPrevious()
+	{
+		if (_currentCardIndex > 1)
+		{
+			_currentCardIndex--;
+		}
+		_horizontalScroll.ScrollToPrevious();
+	}
+
+	private void ScrollToNext()
+	{
+		if (_currentCardIndex < _unit.CardQty)
+		{
+			_currentCardIndex++;
+		}
+		_horizontalScroll.ScrollToNext();
+	}
+
+	private async Task<ValueTask> OnKeyDownAsync(FluentKeyCodeEventArgs key)
+	{
+		await JsRuntime.InvokeVoidAsync("logger.info", key.Value);
 		switch (key.KeyCode)
-	    {
-		    case 32:
-			    _isCardFlipped = _isCardFlipped.ToDictionary(card => card.Key, card => false);
+		{
+			case 32:
+				_isCardFlipped = _isCardFlipped.ToDictionary(card => card.Key, card => false);
 				StateHasChanged();
-			    break;
+				break;
 			case 39:
-			    _horizontalScroll.ScrollToNext();
-			    break;
-		    case 37:
-			    _horizontalScroll.ScrollToPrevious();
-			    break;
-	    }
+				ScrollToNext();
+				StateHasChanged();
+				break;
+			case 37:
+				ScrollToPrevious();
+				StateHasChanged();
+				break;
+		}
 
-	    return ValueTask.CompletedTask;
-    }
+		return ValueTask.CompletedTask;
+	}
 
-    private async Task HandleEditUnit()
-    {
+	private async Task HandleEditUnit()
+	{
 		var input = new CreateUnitVm()
 		{
 			Name = _unit.Name,
@@ -170,8 +203,8 @@ public partial class UnitPage : IAsyncDisposable
 		}
 	}
 
-    private async void HandleDeleteUnit()
-    {
+	private async void HandleDeleteUnit()
+	{
 		var dialog = await DialogService.ShowConfirmationAsync("Are you sure you want to delete this unit");
 		var result = await dialog.Result;
 
@@ -196,7 +229,7 @@ public partial class UnitPage : IAsyncDisposable
 			if (response.IsSucceed)
 			{
 				ToastMessageState.PushMessage("Unit deleted successfully");
-				
+
 				NavigationManager.NavigateTo("/resources");
 			}
 			else
@@ -206,9 +239,129 @@ public partial class UnitPage : IAsyncDisposable
 		}
 	}
 
+	private async Task HandleCreateFlashcard()
+	{
+		var input = new CreateFlashcardVm()
+		{
+			UnitId = _unit.Id,
+			Front = "null",
+			Back = "null"
+		};
+
+		var (response, statusCode) = await FlashcardService.CreateFlashcardAsync(input);
+
+		switch (statusCode)
+		{
+			case HttpStatusCode.Unauthorized:
+				var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+				await dialog401.Result;
+				NavigationManager.NavigateTo("/");
+				break;
+			case HttpStatusCode.Forbidden:
+				var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+				await dialog403.Result;
+				NavigationManager.NavigateTo("/");
+				break;
+		}
+
+		if (response.IsSucceed)
+		{
+			var result = JsonConvert.DeserializeObject<FlashcardVm>(response.Data!.ToString()!);
+			result!.Front = string.Empty;
+			result.Back = string.Empty;
+			var flashcardVms = _unit.Flashcards.Append(result);
+			_unit.Flashcards = flashcardVms.ToList();
+			_isCardFlipped.Add(result.Id, false);
+			_message = _unit.Flashcards.Any()
+				? $"This unit has {_unit.Flashcards.Count()} flashcards."
+				: "This unit has no flashcards.";
+			ToastService.ShowSuccess("Flashcard created successfully");
+		}
+		else
+		{
+			ToastService.ShowError("Failed to create flashcard");
+		}
+	}
+
+	private async Task HandleDeleteFlashcard(int flashcardId)
+	{
+		var dialog = await DialogService.ShowConfirmationAsync("Are you sure you want to delete this flashcard");
+		var result = await dialog.Result;
+
+		if (!result.Cancelled)
+		{
+			var (response, statusCode) = await FlashcardService.DeleteFlashcardAsync(flashcardId);
+
+			switch (statusCode)
+			{
+				case HttpStatusCode.Unauthorized:
+					var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+					await dialog401.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+				case HttpStatusCode.Forbidden:
+					var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+					await dialog403.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+			}
+
+			if (response.IsSucceed)
+			{
+				_unit.Flashcards = _unit.Flashcards.Where(f => f.Id != flashcardId).ToList();
+				_message = _unit.Flashcards.Any()
+					? $"This unit has {_unit.Flashcards.Count()} flashcards."
+					: "This unit has no flashcards.";
+				ToastService.ShowSuccess("Flashcard deleted successfully");
+			}
+			else
+			{
+				ToastService.ShowError("Failed to delete flashcard");
+			}
+		}
+	}
+
+	private async Task HandleEditFlashcard(UpdateFlashcardVm flashcardVm)
+	{
+		var (response, statusCode) = await FlashcardService.UpdateFlashcardAsync(flashcardVm);
+
+		switch (statusCode)
+		{
+			case HttpStatusCode.Unauthorized:
+				var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+				await dialog401.Result;
+				NavigationManager.NavigateTo("/");
+				break;
+			case HttpStatusCode.Forbidden:
+				var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+				await dialog403.Result;
+				NavigationManager.NavigateTo("/");
+				break;
+		}
+
+		if (response.IsSucceed)
+		{
+			var index = _unit.Flashcards.ToList().FindIndex(f => f.Id == flashcardVm!.Id);
+
+			if (index >= 0)
+			{
+				var flashcardsList = _unit.Flashcards.ToList();
+				flashcardsList[index].Front = flashcardVm.Front;
+				flashcardsList[index].Back = flashcardVm.Back;
+				_unit.Flashcards = flashcardsList;
+			}
+
+			ToastService.ShowSuccess("Flashcard updated successfully");
+		}
+		else
+		{
+			ToastService.ShowError("Failed to update flashcard");
+		}
+	}
+
 	public ValueTask DisposeAsync()
-    {
-	    KeyCodeService.UnregisterListener(OnKeyDownAsync);
-	    return ValueTask.CompletedTask;
-    }
+	{
+		KeyCodeService.UnregisterListener(OnKeyDownAsync);
+		return ValueTask.CompletedTask;
+	}
 }

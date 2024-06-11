@@ -4,165 +4,78 @@
 
 @inject IDialogService DialogService
 @inject IToastService ToastService
-
-@inject IKeyCodeService KeyCodeService
-@implements IAsyncDisposable
+@inject IJSRuntime JsRuntime
 
 <style>
-	.full-width,
-	.full-width fluent-card {
-		width: 600px;
-		height: 300px;
-		cursor: pointer;
-		transition: background-color 0.5s ease-in-out;
-	}
-
-		.full-width fluent-card:hover {
-			background-color: #373A40;
-		}
-
-	fluent-card {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.key-code {
+	.card {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-
-		border: 1px solid #ccc;
-		padding: 10px;
 	}
 
-	li > span {
-		float: left;
-		width: 70px;
-		font-weight: bold;
+	.demopanel {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
+        .demopanel textarea {
+            width: 100%;
+            background: #333333;
+            color: white;
+            text-align: center;
+            border: none;
+            font-size: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
 </style>
 
-<FluentStack>
-	<div class="key-code">
-		<FluentHorizontalScroll
-			@ref="_horizontalScroll"
-			class="full-width" Speed="1000"
-			Easing="ScrollEasing.EaseInOut">
-
-			<FluentCard Id="card1">
-				<FluentLabel Typo="Typography.Header">
-					Card 1
-				</FluentLabel>
-			</FluentCard>
-			<FluentCard Id="card2">
-				<FluentLabel Typo="Typography.Header">
-					Card 2
-				</FluentLabel>
-			</FluentCard>
-			<FluentCard Id="card3">
-				<FluentLabel Typo="Typography.Header">
-					Card 3
-				</FluentLabel>
-			</FluentCard>
-			<FluentCard Id="card4">
-				<FluentLabel Typo="Typography.Header">
-					Card 4
-				</FluentLabel>
-			</FluentCard>
-			<FluentCard Id="card5">
-				<FluentLabel Typo="Typography.Header">
-					Card 5
-				</FluentLabel>
-			</FluentCard>
-		</FluentHorizontalScroll>
-	</div>
-
-	<ul>
-		<li>
-			<span>Value:</span> <code>@LastKeyCode?.Value</code>
-		</li>
-		<li>
-			<span>Key:</span> <code>@LastKeyCode?.Key.ToString()</code>
-		</li>
-		<li>
-			<span>Code:</span> <code>@LastKeyCode?.KeyCode</code>
-		</li>
-		<li>
-			<span>Meta:</span>
-			@if (LastKeyCode?.ShiftKey == true)
-			{
-				<FluentIcon Value="@(new Icons.Filled.Size20.KeyboardShift())"/>
-			}
-			else
-			{
-				<FluentIcon Value="@(new Icons.Regular.Size20.KeyboardShift())" Color="Color.Neutral"/>
-			}
-			@if (LastKeyCode?.CtrlKey == true)
-			{
-				<FluentIcon Value="@(new Icons.Filled.Size20.ControlButton())"/>
-			}
-			else
-			{
-				<FluentIcon Value="@(new Icons.Regular.Size20.ControlButton())" Color="Color.Neutral"/>
-			}
-			@if (LastKeyCode?.AltKey == true)
-			{
-				<FluentIcon Value="@(new Icons.Filled.Size20.KeyCommand())"/>
-			}
-			else
-			{
-				<FluentIcon Value="@(new Icons.Regular.Size20.KeyCommand())" Color="Color.Neutral"/>
-			}
-			@if (LastKeyCode?.MetaKey == true)
-			{
-				<FluentIcon Value="@(new Icons.Filled.Size20.ArrowBounce())"/>
-			}
-			else
-			{
-				<FluentIcon Value="@(new Icons.Regular.Size20.ArrowBounce())" Color="Color.Neutral"/>
-			}
-		</li>
-		<li>
-			<span>Location:</span> <code>@LastKeyCode?.Location.ToString()</code>
-		</li>
-		<li>
-			<span>TargetId:</span> <code>@LastKeyCode?.TargetId</code>
-		</li>
-	</ul>
+<FluentStack Style="width: 100%;">
+	<FluentSplitter Orientation="Orientation.Horizontal" Panel1Size="25%" Style="width: 100%;">
+		<Panel1>
+			<div class="demopanel">
+				<textarea @ref="_frontTextarea" @bind="FrontContent" @oninput="HandleFrontInput" @onblur="HandleFrontContentChange" spellcheck="false" rows="6"></textarea>
+			</div>
+		</Panel1>
+		<Panel2>
+			<div class="demopanel">
+				<textarea @ref="_backTextarea" @bind="BackContent" @oninput="HandleBackInput" @onblur="HandleBackContentChange" spellcheck="false" rows="6"></textarea>
+			</div>
+		</Panel2>
+	</FluentSplitter>
+	<FluentButton Title="Delete">
+		<FluentIcon Value="@(new Icons.Regular.Size20.Delete())" Color="Color.Error"/>
+	</FluentButton>
 </FluentStack>
 
-@code
-{
-	FluentKeyCodeEventArgs? LastKeyCode;
-	FluentHorizontalScroll _horizontalScroll = default!;
+@code {
+	private string FrontContent { get; set; } = string.Empty;
+	private string BackContent { get; set; } = string.Empty;
 
-	protected override void OnInitialized()
+	private ElementReference _frontTextarea;
+	private ElementReference _backTextarea;
+
+	private async void HandleFrontContentChange(FocusEventArgs e)
 	{
-		KeyCodeService.RegisterListener(OnKeyDownAsync);
+		// Handle the content change when the text area loses focus
+		await JsRuntime.InvokeVoidAsync("logger.info", FrontContent);
 	}
 
-	private Task OnKeyDownAsync(FluentKeyCodeEventArgs key)
+	private async void HandleBackContentChange(FocusEventArgs e)
 	{
-		LastKeyCode = key;
-		StateHasChanged();
-		switch (key.KeyCode)
-		{
-			case 39:
-				_horizontalScroll.ScrollToNext();
-				break;
-			case 37:
-				_horizontalScroll.ScrollToPrevious();
-				break;
-		}
-
-		return Task.CompletedTask;
+		// Handle the content change when the text area loses focus
+		await JsRuntime.InvokeVoidAsync("logger.info", BackContent);
 	}
 
-	public ValueTask DisposeAsync()
+	private async Task HandleFrontInput(ChangeEventArgs e)
 	{
-		KeyCodeService.UnregisterListener(OnKeyDownAsync);
-		return ValueTask.CompletedTask;
+		await JsRuntime.InvokeVoidAsync("editorInterop.autoExpand", _frontTextarea);
+	}
+
+	private async Task HandleBackInput(ChangeEventArgs e)
+	{
+		await JsRuntime.InvokeVoidAsync("editorInterop.autoExpand", _backTextarea);
 	}
 }
