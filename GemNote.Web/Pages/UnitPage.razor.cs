@@ -16,7 +16,7 @@ public partial class UnitPage : IAsyncDisposable
 {
 	[Inject] private IDialogService DialogService { get; set; } = default!;
 	[Inject] private IToastService ToastService { get; set; } = default!;
-	[Inject] private IToastMessageService ToastMessageService { get; set; } = default!;
+	[Inject] private ToastMessageState ToastMessageState { get; set; } = default!;
 	[Inject] private IKeyCodeService KeyCodeService { get; set; } = default!;
 	[Inject] private IJSRuntime JsRuntime { get; set; } = default!;
 
@@ -195,7 +195,8 @@ public partial class UnitPage : IAsyncDisposable
 
 			if (response.IsSucceed)
 			{
-				ToastMessageService.PushMessage("Unit deleted successfully");
+				ToastMessageState.PushMessage("Unit deleted successfully");
+				
 				NavigationManager.NavigateTo("/resources");
 			}
 			else

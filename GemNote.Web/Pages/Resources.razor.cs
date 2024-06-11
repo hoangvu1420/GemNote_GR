@@ -6,26 +6,21 @@ using System.Net;
 using GemNote.Web.Services.Contracts;
 using GemNote.Web.States;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace GemNote.Web.Pages;
 
 public partial class Resources
 {
 	// Inject services
-	[Inject]
-	private IDialogService DialogService { get; set; } = null!;
+	[Inject] private IDialogService DialogService { get; set; } = null!;
+	[Inject] private IToastService ToastService { get; set; } = null!;
+	[Inject] private IJSRuntime JsRuntime { get; set; } = null!;
+	[Inject] private ToastMessageState ToastMessageState { get; set; } = default!;
 
-	[Inject]
-	private IToastService ToastService { get; set; } = null!;
-
-	[Inject]
-	private INotebookService NotebookService { get; set; } = null!;
-
-	[Inject]
-	private UserState UserState { get; set; } = null!;
-
-	[Inject]
-	private NavigationManager NavigationManager { get; set; } = null!;
+	[Inject] private INotebookService NotebookService { get; set; } = null!;
+	[Inject] private UserState UserState { get; set; } = null!;
+	[Inject] private NavigationManager NavigationManager { get; set; } = null!;
 
 	private IEnumerable<NotebookVm?> Notebooks { get; set; } = new List<NotebookVm>();
 	private bool _isLoading = true;
@@ -37,6 +32,12 @@ public partial class Resources
 		{
 			NavigationManager.NavigateTo("/unauthorized");
 			return;
+		}
+
+		var message = ToastMessageState.PopMessage();
+		if (message is not null)
+		{
+			ToastService.ShowSuccess(message);
 		}
 
 		var userId = UserState.UserId;

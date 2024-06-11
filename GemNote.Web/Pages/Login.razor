@@ -100,9 +100,16 @@
 
 								<FluentCheckbox Name="remember-me" @bind-Value="_isRememberMe" Label="Remember me" Style="margin-top: 0.5rem;"/>
 
-								<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
-									<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="_isLoading">Log in</FluentButton>
-									<FluentProgressRing Visible="_isLoading"></FluentProgressRing>
+								<FluentStack Orientation="Orientation.Horizontal" 
+								             Style="margin-top: 1rem;" 
+								             HorizontalAlignment="HorizontalAlignment.Center">
+									<FluentButton
+										Type="ButtonType.Submit"
+										Style="width: 50%"
+										Appearance="Appearance.Accent"
+										Loading="_isLoading">
+										Log in
+									</FluentButton>
 								</FluentStack>
 							</EditForm>
 						</div>
@@ -124,7 +131,7 @@
 		var loginResponse = await AuthService.LoginAsync(Request, _isRememberMe);
 		if (!loginResponse.IsSucceed)
 		{
-			foreach (var error in loginResponse.ErrorMessages)
+			foreach (var error in loginResponse.ErrorMessages!)
 			{
 				ToastService.ShowError(error);
 			}

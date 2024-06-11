@@ -37,7 +37,7 @@ public class Program
 		builder.Services.AddScoped<ISectionService, SectionService>();
 		builder.Services.AddScoped<IUnitService, UnitService>();
 		builder.Services.AddScoped<IFlashcardService, FlashcardService>();
-		builder.Services.AddScoped<IToastMessageService, ToastMessageService>();
+		builder.Services.AddScoped<ToastMessageState>();
 
 		// Add states to the container.
 		builder.Services.AddScoped<UserState>();

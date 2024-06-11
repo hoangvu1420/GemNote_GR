@@ -1,9 +1,6 @@
-﻿using GemNote.Web.Services.Contracts;
-using Microsoft.FluentUI.AspNetCore.Components;
+﻿namespace GemNote.Web.States;
 
-namespace GemNote.Web.Services.Implementations;
-
-public class ToastMessageService : IToastMessageService
+public class ToastMessageState
 {
 	private readonly List<string?> _messages = new();
 

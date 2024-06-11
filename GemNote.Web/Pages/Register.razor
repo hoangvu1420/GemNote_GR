@@ -122,9 +122,15 @@
 											  @bind-SelectedOption="@Country">
 								</FluentSelect>
 
-								<FluentStack Orientation="Orientation.Horizontal" Style="margin-top: 1rem;">
-									<FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Disabled="_isLoading">Sign up</FluentButton>
-									<FluentProgressRing Visible="_isLoading"></FluentProgressRing>
+								<FluentStack Orientation="Orientation.Horizontal"
+											 Style="margin-top: 1rem;"
+											 HorizontalAlignment="HorizontalAlignment.Center">
+									<FluentButton Type="ButtonType.Submit"
+												  Style="width: 50%"
+												  Appearance="Appearance.Accent"
+												  Loading="_isLoading">
+										Sign up
+									</FluentButton>
 								</FluentStack>
 							</EditForm>
 						</div>
