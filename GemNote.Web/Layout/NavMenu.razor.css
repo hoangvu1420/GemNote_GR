@@ -1,7 +1,6 @@
 .navmenu {
     padding: 5px;
     background-color: var(--neutral-fill-stealth-rest-on-neutral-fill-layer-rest);
-    color: white;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);

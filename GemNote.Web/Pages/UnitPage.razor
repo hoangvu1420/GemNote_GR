@@ -15,7 +15,7 @@
 	}
 
 		.full-width fluent-card:hover {
-			background-color: #373A40;
+			background-color: var(--neutral-fill-layer-hover);
 		}
 
 	fluent-card {
@@ -102,44 +102,49 @@
 							@(_message)
 						</FluentLabel>
 					</div>
-					<div class="scroll-container">
-						<FluentHorizontalScroll
-							FlippersHiddenFromAt="true"
-							@ref="_horizontalScroll"
-							class="full-width" Speed="1000"
-							Easing="ScrollEasing.EaseInOut">
-							@foreach (var card in _unit.Flashcards)
-							{
-								<FluentCard
-									Id="@($"card{card?.Id.ToString()}")"
-									@onclick="() => HandleCardClicked(card!.Id)">
-									@if (_isCardFlipped[card!.Id])
-									{
-										<FluentLabel Typo="Typography.Subject">
-											@card?.Back
-										</FluentLabel>
-									}
-									else
-									{
-										<FluentLabel Typo="Typography.Header">
-											@card?.Front
-										</FluentLabel>
-									}
-								</FluentCard>
-							}
-						</FluentHorizontalScroll>
-						<FluentStack HorizontalAlignment="HorizontalAlignment.Center" Style="margin-top: 0.5rem;">
-							<FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowLeft())"
-							              Title="Previous card" 
-							              OnClick="HandlePreviousCard"/>
-							<FluentLabel Typo="Typography.Subject">
-								@(_currentCardIndex)/@(_unit.Flashcards.Count())
-							</FluentLabel>
-							<FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowRight())"
-							              Title="Next card" 
-							              OnClick="HandleNextCard" />
-						</FluentStack>
-					</div>
+					@if (_unit.Flashcards.Any())
+					{
+						<div class="scroll-container">
+							<FluentHorizontalScroll
+								FlippersHiddenFromAt="true"
+								@ref="_horizontalScroll"
+								class="full-width" Speed="1000"
+								Easing="ScrollEasing.EaseInOut">
+								@foreach (var card in _unit.Flashcards)
+								{
+									<FluentCard
+										Id="@($"card{card?.Id.ToString()}")"
+										@onclick="() => HandleCardClicked(card!.Id)">
+										@if (_isCardFlipped[card!.Id])
+										{
+											<FluentLabel Typo="Typography.Subject">
+												@card?.Back
+											</FluentLabel>
+										}
+										else
+										{
+											<FluentLabel Typo="Typography.Header">
+												@card?.Front
+											</FluentLabel>
+										}
+									</FluentCard>
+								}
+							</FluentHorizontalScroll>
+							<FluentStack HorizontalAlignment="HorizontalAlignment.Center"
+							             VerticalAlignment="VerticalAlignment.Center"
+							             Style="margin-top: 0.5rem;">
+								<FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowLeft())"
+								              Title="Previous card"
+								              OnClick="HandlePreviousCard"/>
+								<FluentLabel Typo="Typography.Subject">
+									@(_currentCardIndex)/@(_unit.Flashcards.Count())
+								</FluentLabel>
+								<FluentButton IconEnd="@(new Icons.Regular.Size16.ArrowRight())"
+								              Title="Next card"
+								              OnClick="HandleNextCard"/>
+							</FluentStack>
+						</div>
+					}
 					<div class="cards-container">
 						<FluentLabel Typo="Typography.H4" Style="width: 100%;">
 							Flashcards

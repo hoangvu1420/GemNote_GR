@@ -17,36 +17,40 @@ public class AuthenticationMessageHandler(ILocalStorageService localStorageServi
 		var authToken = await localStorageService.GetItemAsync<string>("authToken", cancellationToken);
 		var expirationDate = await localStorageService.GetItemAsync<DateTime>("expirationDate", cancellationToken);
 
-		// If authToken and expirationDate are present and not expired
-		if (!string.IsNullOrEmpty(authToken) && expirationDate > DateTime.Now)
+		switch (string.IsNullOrEmpty(authToken))
 		{
-			// Add authorization header to the request
-			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
-		}
-		else
-		{
-			var refreshToken = await localStorageService.GetItemAsync<string>("refreshToken", cancellationToken);
-			if (string.IsNullOrEmpty(refreshToken)) return await base.SendAsync(request, cancellationToken);
-			var userId = await localStorageService.GetItemAsync<string>("userId", cancellationToken);
-
-			// Call RefreshTokenAsync method to get new authToken
-			var client = new HttpClient { BaseAddress = new Uri(ApiUri.DevelopmentUri) };
-
-			var requestData = new RefreshTokenRequest
+			// If authToken and expirationDate are present and not expired
+			case false when expirationDate > DateTime.Now:
+				// Add authorization header to the request
+				request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+				break;
+			case false when expirationDate < DateTime.Now:
 			{
-				UserId = userId!,
-				RefreshToken = refreshToken
-			};
-			var response = await client.PostAsJsonAsync("api/auth/refresh-token", requestData, cancellationToken);
-			var refreshTokenResponse = await response.Content.ReadFromJsonAsync<RefreshTokenResponse>(cancellationToken);
+				var refreshToken = await localStorageService.GetItemAsync<string>("refreshToken", cancellationToken);
+				if (string.IsNullOrEmpty(refreshToken)) return await base.SendAsync(request, cancellationToken);
+				var userId = await localStorageService.GetItemAsync<string>("userId", cancellationToken);
 
-			// Add authorization header to the request
-			if (!refreshTokenResponse!.IsSucceed) return await base.SendAsync(request, cancellationToken);
+				// Call RefreshTokenAsync method to get new authToken
+				var client = new HttpClient { BaseAddress = new Uri(ApiUri.DevelopmentUri) };
+
+				var requestData = new RefreshTokenRequest
+				{
+					UserId = userId!,
+					RefreshToken = refreshToken
+				};
+				var response = await client.PostAsJsonAsync("api/auth/refresh-token", requestData, cancellationToken);
+				var refreshTokenResponse = await response.Content.ReadFromJsonAsync<RefreshTokenResponse>(cancellationToken);
+
+				// Add authorization header to the request
+				if (!refreshTokenResponse!.IsSucceed) return await base.SendAsync(request, cancellationToken);
 		
-			await localStorageService.SetItemAsync("authToken", refreshTokenResponse.Token, cancellationToken);
-			await localStorageService.SetItemAsync("expirationDate", refreshTokenResponse.ExpirationDate, cancellationToken);
+				await localStorageService.SetItemAsync("authToken", refreshTokenResponse.Token, cancellationToken);
+				await localStorageService.SetItemAsync("refreshToken", refreshTokenResponse.RefreshToken, cancellationToken);
+				await localStorageService.SetItemAsync("expirationDate", refreshTokenResponse.ExpirationDate, cancellationToken);
 		
-			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", refreshTokenResponse.Token);
+				request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", refreshTokenResponse.Token);
+				break;
+			}
 		}
 		return await base.SendAsync(request, cancellationToken);
 	}
