@@ -142,6 +142,7 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<ISectionService, SectionService>();
 		services.AddScoped<IUnitService, UnitService>();
 		services.AddScoped<IFlashcardService, FlashcardService>();
+		services.AddScoped<IReviewService, ReviewService>();
 	}
 
 	public static void AddRepositories(this IServiceCollection services)
@@ -154,5 +155,6 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<ISectionRepository, SectionRepository>();
 		services.AddScoped<IUnitRepository, UnitRepository>();
 		services.AddScoped<IFlashcardRepository, FlashcardRepository>();
+		services.AddScoped<IReviewRepository, ReviewRepository>();
 	}
 }

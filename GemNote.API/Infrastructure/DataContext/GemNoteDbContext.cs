@@ -19,5 +19,16 @@ public class GemNoteDbContext(DbContextOptions<GemNoteDbContext> options) : Iden
 	{
 		base.OnModelCreating(modelBuilder);
 
+		modelBuilder.Entity<CardReviewSession>()
+			.HasOne(crs => crs.Flashcard)
+			.WithMany(f => f.CardReviewSessions)
+			.HasForeignKey(crs => crs.FlashcardId)
+			.OnDelete(DeleteBehavior.Restrict);
+
+		modelBuilder.Entity<CardReviewSession>()
+			.HasOne(crs => crs.AppUser)
+			.WithMany(u => u.CardReviewSessions)
+			.HasForeignKey(crs => crs.AppUserId)
+			.OnDelete(DeleteBehavior.Restrict);
 	}
 }
