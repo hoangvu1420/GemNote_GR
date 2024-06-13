@@ -222,6 +222,39 @@ public class ReviewService(
 		}
 	}
 
+	public async Task<ApiResponse> GetReviewsByUnitId(int unitId)
+	{
+		var response = new ApiResponse();
+
+		try
+		{
+			var flashcards = await flashcardRepository.GetAllAsync(filter: f => f.UnitId == unitId, includeProperties: "CardReviewSessions");
+
+			var reviews = flashcards.SelectMany(f => f.CardReviewSessions);
+
+			var cardReviewSessions = reviews.ToList();
+			if (!cardReviewSessions.Any())
+			{
+				response.IsSucceed = false;
+				response.ErrorMessages = ["No reviews found"];
+				return response;
+			}
+
+			response.IsSucceed = true;
+			response.Data = mapper.Map<IEnumerable<ReviewDto>>(cardReviewSessions);
+
+			return response;
+		}
+		catch (Exception ex)
+		{
+			return new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = [ex.Message]
+			};
+		}
+	}
+
 	private async Task SpacedRepetitionReview(CardReviewSession review)
 	{
 		var flashcard = await flashcardRepository.GetAsync(filter: f => f.Id == review.FlashcardId);

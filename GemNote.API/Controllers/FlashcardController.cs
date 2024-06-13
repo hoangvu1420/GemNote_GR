@@ -73,6 +73,31 @@ public class FlashcardController(IFlashcardService flashcardService) : Controlle
 		}
 	}
 
+	[HttpGet("due/{userId}", Name = "GetDueFlashcardsByUserId")]
+	[ResourceAuthorize(typeof(Flashcard))] // Custom filter to authorize access to resources
+	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	public async Task<IActionResult> GetDueFlashcardsByUserIdAsync(string userId)
+	{
+		try
+		{
+			_response = await flashcardService.GetDueFlashcardsByUserIdAsync(userId);
+			if (!_response.IsSucceed)
+				return NotFound(_response);
+
+			return Ok(_response);
+		}
+		catch (Exception e)
+		{
+			_response.IsSucceed = false;
+			_response.ErrorMessages = [e.Message];
+			return StatusCode(StatusCodes.Status500InternalServerError, _response);
+		}
+	}
+
 	[HttpPost(Name = "CreateFlashcard")]
 	[ResourceAuthorize(typeof(Flashcard))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]

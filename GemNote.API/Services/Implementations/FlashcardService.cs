@@ -9,6 +9,7 @@ namespace GemNote.API.Services.Implementations;
 
 public class FlashcardService(
 	IFlashcardRepository flashcardRepository,
+	IReviewRepository reviewRepository,
 	IMapper mapper) : IFlashcardService
 {
 	public async Task<ApiResponse> GetFlashcardsAsync()
@@ -90,6 +91,55 @@ public class FlashcardService(
 
 			response.IsSucceed = true;
 			response.Data = mapper.Map<FlashcardDto>(flashcard);
+
+			return response;
+		}
+		catch (Exception ex)
+		{
+			return new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = [ex.Message]
+			};
+		}
+	}
+
+	public async Task<ApiResponse> GetDueFlashcardsByUserIdAsync(string userId)
+	{
+		var response = new ApiResponse();
+
+		try
+		{
+			// Get all reviews for the user
+			var reviews = await reviewRepository.GetAllAsync(
+				filter: r => r.AppUserId == userId,
+				includeProperties: "Flashcard"
+			);
+
+			// Group by FlashcardId and select the review with the latest ReviewDate for each group
+			var latestReviews = reviews
+				.GroupBy(r => r.FlashcardId)
+				.Select(g => g.OrderByDescending(r => r.ReviewDate).First())
+				.ToList();
+
+			// Filter the latest reviews for those that are due today
+			var dueReviews = latestReviews
+				.Where(r => r.NextReviewDate.Date == DateTime.Today)
+				.ToList();
+
+			// Get distinct flashcards from the due reviews
+			var flashcards = dueReviews.Select(r => r.Flashcard).Distinct().ToList();
+
+			var flashcardList = flashcards.ToList();
+			if (!flashcardList.Any())
+			{
+				response.IsSucceed = false;
+				response.ErrorMessages = ["No flashcards found"];
+				return response;
+			}
+
+			response.IsSucceed = true;
+			response.Data = mapper.Map<IEnumerable<FlashcardDto>>(flashcardList);
 
 			return response;
 		}

@@ -12,4 +12,5 @@ public interface IFlashcardService
 	Task<ApiResponse> CreateFlashcardAsync(CreateFlashcardDto flashcardDto);
 	Task<ApiResponse> UpdateFlashcardAsync(int flashcardId, UpdateFlashcardDto flashcardDto);
 	Task<ApiResponse> DeleteFlashcardAsync(int id);
+	Task<ApiResponse> GetDueFlashcardsByUserIdAsync(string userId);
 }

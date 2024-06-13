@@ -12,4 +12,5 @@ public interface IReviewService
 	Task<ApiResponse> GetDueReviewsByUserId(string userId);
 	Task<ApiResponse> GetReviewsByUserId(string userId);
 	Task<ApiResponse> GetReviewsByFlashcardId(int flashcardId);
+	Task<ApiResponse> GetReviewsByUnitId(int unitId);
 }

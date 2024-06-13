@@ -183,4 +183,28 @@ public class ReviewSessionController(IReviewService reviewService) : ControllerB
 			return StatusCode(StatusCodes.Status500InternalServerError, _response);
 		}
 	}
+
+	[HttpGet("unit/{unitId}", Name = "GetReviewSessionByUnitId")]
+	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+	[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	public async Task<IActionResult> GetReviewsByUnitIdAsync(int unitId)
+	{
+		try
+		{
+			_response = await reviewService.GetReviewsByUnitId(unitId);
+			if (!_response.IsSucceed)
+				return NotFound(_response);
+
+			return Ok(_response);
+		}
+		catch (Exception e)
+		{
+			_response.IsSucceed = false;
+			_response.ErrorMessages = [e.Message];
+			return StatusCode(StatusCodes.Status500InternalServerError, _response);
+		}
+	}
 }
