@@ -38,10 +38,11 @@ public class Program
 		builder.Services.AddScoped<ISectionService, SectionService>();
 		builder.Services.AddScoped<IUnitService, UnitService>();
 		builder.Services.AddScoped<IFlashcardService, FlashcardService>();
-		builder.Services.AddScoped<ToastMessageState>();
+		builder.Services.AddScoped<IReviewService, ReviewService>();
 
 		// Add states to the container.
 		builder.Services.AddScoped<UserState>();
+		builder.Services.AddScoped<ToastMessageState>();
 
 		await builder.Build().RunAsync();
 	}

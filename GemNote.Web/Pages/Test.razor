@@ -1,4 +1,7 @@
 ﻿@page "/test"
+@using GemNote.Web.Components.ReiewComponents
+@using GemNote.Web.ViewModels.FlashcardViewModels
+@using GemNote.Web.ViewModels.ReviewViewModels
 
 <PageTitle>Test</PageTitle>
 
@@ -6,76 +9,53 @@
 @inject IToastService ToastService
 @inject IJSRuntime JsRuntime
 
-<style>
-	.card {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.demopanel {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-        .demopanel textarea {
-            width: 100%;
-            background: #333333;
-            color: white;
-            text-align: center;
-            border: none;
-            font-size: 1rem;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-</style>
-
-<FluentStack Style="width: 100%;">
-	<FluentSplitter Orientation="Orientation.Horizontal" Panel1Size="25%" Style="width: 100%;">
-		<Panel1>
-			<div class="demopanel">
-				<textarea @ref="_frontTextarea" @bind="FrontContent" @oninput="HandleFrontInput" @onblur="HandleFrontContentChange" spellcheck="false" rows="6"></textarea>
-			</div>
-		</Panel1>
-		<Panel2>
-			<div class="demopanel">
-				<textarea @ref="_backTextarea" @bind="BackContent" @oninput="HandleBackInput" @onblur="HandleBackContentChange" spellcheck="false" rows="6"></textarea>
-			</div>
-		</Panel2>
-	</FluentSplitter>
-	<FluentButton Title="Delete">
-		<FluentIcon Value="@(new Icons.Regular.Size20.Delete())" Color="Color.Error"/>
-	</FluentButton>
-</FluentStack>
+<FluentButton OnClick="OpenReviewDialogAsync">
+	Open review dialog
+</FluentButton>
 
 @code {
-	private string FrontContent { get; set; } = string.Empty;
-	private string BackContent { get; set; } = string.Empty;
+	private readonly ReviewSessionVm _reviewSession = new ReviewSessionVm();
 
-	private ElementReference _frontTextarea;
-	private ElementReference _backTextarea;
-
-	private async void HandleFrontContentChange(FocusEventArgs e)
+	public Test()
 	{
-		// Handle the content change when the text area loses focus
-		await JsRuntime.InvokeVoidAsync("logger.info", FrontContent);
+		// Initialize the review session with 5 FlashcardVm objects
+		_reviewSession.Flashcards =
+		[
+			new FlashcardVm { Id = 1, Front = "Front 1", Back = "Back 1", Interval = 1, RepetitionCount = 0, EaseFactor = 2.5, UnitId = 1, UnitName = "Unit 1" },
+			new FlashcardVm { Id = 2, Front = "Front 2", Back = "Back 2", Interval = 2, RepetitionCount = 0, EaseFactor = 2.5, UnitId = 2, UnitName = "Unit 2" },
+			new FlashcardVm { Id = 3, Front = "Front 3", Back = "Back 3", Interval = 3, RepetitionCount = 0, EaseFactor = 2.5, UnitId = 3, UnitName = "Unit 3" },
+			new FlashcardVm { Id = 4, Front = "Front 4", Back = "Back 4", Interval = 4, RepetitionCount = 0, EaseFactor = 2.5, UnitId = 4, UnitName = "Unit 4" },
+			new FlashcardVm { Id = 5, Front = "Front 5", Back = "Back 5", Interval = 5, RepetitionCount = 0, EaseFactor = 2.5, UnitId = 5, UnitName = "Unit 5" }
+		];
+
+		// Initialize the Reviews list as an empty list
+		_reviewSession.Reviews = []; 
+
+		// Update FlashcardCount and ReviewCount
+		_reviewSession.FlashcardCount = _reviewSession.Flashcards.Count;
+		_reviewSession.ReviewCount = _reviewSession.Reviews.Count;
 	}
 
-	private async void HandleBackContentChange(FocusEventArgs e)
+	private async Task OpenReviewDialogAsync()
 	{
-		// Handle the content change when the text area loses focus
-		await JsRuntime.InvokeVoidAsync("logger.info", BackContent);
+		var dialog = await DialogService.ShowDialogAsync<ReviewDialogComp>(_reviewSession, new DialogParameters()
+			{
+				Title = "Review",
+				OnDialogResult = DialogService.CreateDialogCallback(this, HandleReviewDialog),
+				Width = "fit-content",
+				Height = "fit-content",
+				TrapFocus = true,
+				Modal = false
+			});
+		await dialog.Result;
 	}
 
-	private async Task HandleFrontInput(ChangeEventArgs e)
+	private async Task HandleReviewDialog(DialogResult result)
 	{
-		await JsRuntime.InvokeVoidAsync("editorInterop.autoExpand", _frontTextarea);
-	}
-
-	private async Task HandleBackInput(ChangeEventArgs e)
-	{
-		await JsRuntime.InvokeVoidAsync("editorInterop.autoExpand", _backTextarea);
+		if (result.Data is not null)
+		{
+			var reviewResult = (ReviewSessionVm)result.Data;
+			ToastService.ShowSuccess($"{reviewResult.FlashcardCount} cards ; {reviewResult.ReviewCount} reviews");
+		}
 	}
 }

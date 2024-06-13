@@ -1,0 +1,326 @@
+﻿@using GemNote.Web.ViewModels.ReviewViewModels
+@using GemNote.Web.ViewModels.FlashcardViewModels
+@using GemNote.Web.States
+
+@inject UserState UserState
+@inject IJSRuntime Js
+
+@implements IDialogContentComponent<ReviewSessionVm>
+
+<style>
+	.container {
+		width: 800px;
+		height: fit-content;
+		max-width: 85vw;
+	}
+
+	.card-container {
+		margin: 1rem;
+		width: 100%;
+		height: 300px;
+		display: flex;
+		justify-content: center;
+		align-items:flex-start;
+		flex-wrap: wrap;
+	}
+
+	.grid-container {
+		width: 100%;
+	}
+
+	.btn-bar {
+		width: 100%;
+		height: 80px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.btn-bar > * {
+		margin: 0.5rem;
+	}
+</style>
+
+<FluentDialogHeader>
+	<FluentStack VerticalAlignment="VerticalAlignment.Center">
+		<FluentIcon Value="@(new Icons.Regular.Size24.Copy())"/>
+		<FluentLabel Typo="Typography.PaneHeader">
+			@Dialog.Instance.Parameters.Title
+		</FluentLabel>
+	</FluentStack>
+</FluentDialogHeader>
+
+<FluentDialogBody>
+	<div class="container">
+		<div class="card-container">
+			<FluentStack Orientation="Orientation.Vertical">
+				@if (_isReviewFinished)
+				{
+					<FluentGrid AdaptiveRendering="true" Justify="JustifyContent.FlexStart" Class="grid-container">
+						<FluentGridItem xs="12" sm="4">
+							<FluentLabel Typo="Typography.PaneHeader">
+								Review finished! <FluentEmoji Value="@(new Emojis.Activities.Flat.Default.ConfettiBall())" />
+							</FluentLabel>
+							<FluentLabel Typo="Typography.Body">
+								Total flashcards: @(Content.FlashcardCount)
+							</FluentLabel>
+							<FluentLabel Typo="Typography.Body">
+								Total reviews: @(Content.ReviewCount)
+							</FluentLabel>
+						</FluentGridItem>
+						<FluentGridItem xs="12" sm="8">
+							<canvas id="barChart" width="400" height="200"></canvas>
+						</FluentGridItem>
+					</FluentGrid>
+				}
+				else
+				{
+					<FluentStack>
+						<FluentBadge Appearance="Appearance.Accent">
+							@CurFlashcard.UnitName
+						</FluentBadge>
+						<FluentBadge Appearance="Appearance.Neutral">
+							@(_curCardIndex + 1)/@_numCards
+						</FluentBadge>
+					</FluentStack>
+					<FluentLabel Typo="Typography.Subject">
+						Question:
+					</FluentLabel>
+					<FluentLabel Typo="Typography.Body" Style="margin-left: 10px;">
+						@CurFlashcard.Front
+					</FluentLabel>
+					<FluentLabel Typo="Typography.Subject">
+						Answer:
+					</FluentLabel>
+					@if (_isFlipped)
+					{
+						<FluentLabel Typo="Typography.Body" Style="margin-left: 10px;">
+							@CurFlashcard.Back
+						</FluentLabel>
+					}
+					else
+					{
+						<FluentEmoji Value="@(new Emojis.Symbols.Flat.Default.RedQuestionMark())" Style="margin-left: 10px;"/>
+					}
+				}
+			</FluentStack>
+		</div>
+
+		<div class="btn-bar">
+			@if (!_isFlipped && !_isReviewFinished)
+			{
+				<FluentButton IconStart="@(new Icons.Regular.Size20.Eye())"
+				              OnClick="@(() => _isFlipped = !_isFlipped)"
+				              Appearance="Appearance.Accent"
+				              Style="width: 100%; height: 2.5rem;">
+					Click to show answer
+				</FluentButton>
+			}
+			else if (_isReviewFinished)
+			{
+				<FluentButton OnClick="@SaveAsync"
+							  Appearance="Appearance.Accent" 
+				              Style="width: 100%; height: 2.5rem;">
+					Finish
+				</FluentButton>
+			}
+			else
+			{
+				<FluentStack HorizontalAlignment="HorizontalAlignment.Center" Wrap="true">
+					<FluentButton OnClick="() => HandleButtonClick(ReviewStatus.Forgotten)" Style="height: fit-content;">
+						<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" VerticalGap="0" Style="margin: 10px auto;">
+							<FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.KnockedOutFace())"/>
+							<FluentLabel Typo="Typography.Subject">
+								Forgotten
+							</FluentLabel>
+						</FluentStack>
+					</FluentButton>
+					<FluentButton OnClick="() => HandleButtonClick(ReviewStatus.Uncertain)" Style="height: fit-content;">
+						<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" VerticalGap="0" Style="margin: 10px auto;">
+							<FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.DisappointedFace())"/>
+							<FluentLabel Typo="Typography.Subject">
+								Uncertain
+							</FluentLabel>
+						</FluentStack>
+					</FluentButton>
+					<FluentButton OnClick="() => HandleButtonClick(ReviewStatus.Struggled)" Style="height: fit-content;">
+						<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" VerticalGap="0" Style="margin: 10px auto;">
+							<FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.SlightlySmilingFace())"/>
+							<FluentLabel Typo="Typography.Subject">
+								Struggled
+							</FluentLabel>
+						</FluentStack>
+					</FluentButton>
+					<FluentButton OnClick="() => HandleButtonClick(ReviewStatus.Confident)" Style="height: fit-content;">
+						<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" VerticalGap="0" Style="margin: 10px auto;">
+							<FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.GrinningFaceWithSmilingEyes())"/>
+							<FluentLabel Typo="Typography.Subject">
+								Confident
+							</FluentLabel>
+						</FluentStack>
+					</FluentButton>
+					<FluentButton OnClick="() => HandleButtonClick(ReviewStatus.Mastered)" Style="height: fit-content;">
+						<FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Center" VerticalGap="0" Style="margin: 10px auto;">
+							<FluentEmoji Value="@(new Emojis.SmileysEmotion.Flat.Default.SmilingFaceWithSunglasses())"/>
+							<FluentLabel Typo="Typography.Subject">
+								Mastered
+							</FluentLabel>
+						</FluentStack>
+					</FluentButton>
+				</FluentStack>
+			}
+		</div>
+	</div>
+</FluentDialogBody>
+
+<FluentDialogFooter Visible="false">
+	<FluentButton Appearance="Appearance.Neutral"
+				  OnClick="@SaveAsync">
+		Close
+	</FluentButton>
+</FluentDialogFooter>
+
+@code {
+	[Parameter] public ReviewSessionVm Content { get; set; } = null!;
+	[CascadingParameter] public FluentDialog Dialog { get; set; } = default!;
+
+	private int _curCardIndex;
+	private int _numCards;
+
+	private FlashcardVm CurFlashcard => Content.Flashcards!.ElementAtOrDefault(_curCardIndex)!;
+	private bool _isFlipped;
+	private bool _isReviewFinished;
+
+	protected override void OnInitialized()
+	{
+		Js.InvokeVoidAsync("logger.object", Content);
+		_numCards = Content.Flashcards!.Count();
+	}
+
+	enum ReviewStatus
+	{
+		None,
+		Forgotten,
+		Uncertain,
+		Struggled,
+		Confident,
+		Mastered
+	}
+
+	private async Task HandleButtonClick(ReviewStatus status)
+	{
+		var review = new CreateReviewVm
+		{
+			AppUserId = UserState.UserId!,
+			FlashcardId = CurFlashcard.Id,
+			ReviewDate = DateTime.UtcNow,
+		};
+		switch (status)
+		{
+			case ReviewStatus.Forgotten:
+				// Handle "Forgotten" button click
+				review.EaseLevel = (int)ReviewStatus.Forgotten;
+				break;
+			case ReviewStatus.Uncertain:
+				// Handle "Uncertain" button click
+				review.EaseLevel = (int)ReviewStatus.Uncertain;
+				break;
+			case ReviewStatus.Struggled:
+				// Handle "Struggled" button click
+				review.EaseLevel = (int)ReviewStatus.Struggled;
+				break;
+			case ReviewStatus.Confident:
+				// Handle "Confident" button click
+				review.EaseLevel = (int)ReviewStatus.Confident;
+				break;
+			case ReviewStatus.Mastered:
+				// Handle "Mastered" button click
+				review.EaseLevel = (int)ReviewStatus.Mastered;
+				break;
+			case ReviewStatus.None:
+			default:
+				throw new ArgumentOutOfRangeException(nameof(status), status, null);
+		}
+
+		Content.Reviews.Add(review);
+		Content.ReviewCount++;
+
+		if (_curCardIndex < _numCards - 1)
+		{
+			_curCardIndex++;
+			_isFlipped = false;
+		}
+		else
+		{
+			_isReviewFinished = true;
+			await Js.InvokeVoidAsync("logger.object", Content.Reviews);
+			await DrawChart();
+		}
+	}
+
+	private async Task DrawChart()
+	{
+		var data = new
+		{
+			labels = new[] { "Forgotten", "Uncertain", "Struggled", "Confident", "Mastered" },
+			datasets = new[]
+			{
+				new {
+					label = "Number of cards",
+					data = new[]
+					{
+						Content.Reviews.Count(r => r.EaseLevel == (int)ReviewStatus.Forgotten),
+						Content.Reviews.Count(r => r.EaseLevel == (int)ReviewStatus.Uncertain),
+						Content.Reviews.Count(r => r.EaseLevel == (int)ReviewStatus.Struggled),
+						Content.Reviews.Count(r => r.EaseLevel == (int)ReviewStatus.Confident),
+						Content.Reviews.Count(r => r.EaseLevel == (int)ReviewStatus.Mastered)
+					},
+					backgroundColor = new[]
+					{
+						"rgba(255, 99, 132, 0.5)",
+						"rgba(54, 162, 235, 0.5)",
+						"rgba(255, 206, 86, 0.5)",
+						"rgba(75, 192, 192, 0.5)",
+						"rgba(153, 102, 255, 0.5)"
+					},
+					borderColor = new[]
+					{
+						"rgba(255, 99, 132, 1)",
+						"rgba(54, 162, 235, 1)",
+						"rgba(255, 206, 86, 1)",
+						"rgba(75, 192, 192, 1)",
+						"rgba(153, 102, 255, 1)"
+					},
+					borderWidth = 1
+				}
+			}
+		};
+
+		var options = new
+		{
+			scales = new
+			{
+				y = new
+				{
+					beginAtZero = true
+				}
+			}
+		};
+
+		// Ensure the canvas is visible before drawing the chart
+		await Js.InvokeVoidAsync("chartInterop.showElement", "barChart");
+		await Js.InvokeVoidAsync("chartInterop.drawBarChart", "barChart", data, options);
+	}
+
+	private async Task SaveAsync()
+	{
+		await Dialog.CloseAsync(Content);
+	}
+
+	private async Task CancelAsync()
+	{
+		await Dialog.CancelAsync();
+	}
+
+}

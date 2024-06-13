@@ -116,6 +116,58 @@ public class FlashcardService(IHttpClientFactory httpClientFactory) : IFlashcard
 		}
 	}
 
+	public async Task<(ApiResponse response, HttpStatusCode statusCode)> GetDueFlashcardsByUserIdAsync(string userId)
+	{
+		try
+		{
+			var response = await _httpClient.GetAsync($"api/flashcards/due/{userId}");
+
+			if (!response.IsSuccessStatusCode)
+			{
+				var statusCode = response.StatusCode;
+				List<string> errorMessages;
+
+				switch (statusCode)
+				{
+					case HttpStatusCode.Forbidden:
+						errorMessages = ["You are forbidden to get these flashcards."];
+						break;
+					case HttpStatusCode.Unauthorized:
+						errorMessages = ["You are not authorized to get flashcards."];
+						break;
+					case HttpStatusCode.NotFound:
+						var error = await response.Content.ReadFromJsonAsync<ApiResponse>();
+						return (error!, statusCode);
+					default:
+						errorMessages = ["There was an error getting flashcards. Please try again."];
+						break;
+				}
+
+				return (new ApiResponse
+				{
+					IsSucceed = false,
+					ErrorMessages = errorMessages
+				}, statusCode);
+			}
+
+			var content = await response.Content.ReadFromJsonAsync<ApiResponse>() ?? new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = new List<string> { "There was an error getting flashcards. Please try again." }
+			};
+
+			return (content, response.StatusCode);
+		}
+		catch (Exception ex)
+		{
+			return (new ApiResponse
+			{
+				IsSucceed = false,
+				ErrorMessages = new List<string> { $"There was an error getting flashcards. Please try again. {ex.Message}" }
+			}, HttpStatusCode.InternalServerError);
+		}
+	}
+
 	public async Task<(ApiResponse response, HttpStatusCode statusCode)> CreateFlashcardAsync(CreateFlashcardVm flashcardVm)
 	{
 		try

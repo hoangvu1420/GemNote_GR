@@ -1,0 +1,87 @@
+﻿@using GemNote.Web.ViewModels.ReviewViewModels
+@using GemNote.Web.ViewModels.FlashcardViewModels
+@using GemNote.Web.Services.Contracts
+@using GemNote.Web.States
+@using System.Net
+
+@inject IToastService ToastService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+@inject IReviewService ReviewService
+@inject IJSRuntime JsRuntime
+@inject UserState UserState
+
+<FluentButton IconStart="@(new Icons.Regular.Size20.Play())"
+              Appearance="Appearance.Accent"
+              OnClick="OpenReviewDialogAsync">
+	Start review
+</FluentButton>
+
+@code {
+	[Parameter] public IEnumerable<FlashcardVm> ReviewFlashcards { get; set; } = null!;
+	[Parameter] public EventCallback OnFinished { get; set; }
+
+	private readonly ReviewSessionVm _reviewSession = new();
+
+	protected override void OnParametersSet()
+	{
+		_reviewSession.Flashcards = ReviewFlashcards.ToList();
+		_reviewSession.Reviews = [];
+		_reviewSession.FlashcardCount = _reviewSession.Flashcards!.Count;
+		_reviewSession.ReviewCount = _reviewSession.Reviews.Count;
+	}
+
+	private async Task OpenReviewDialogAsync()
+	{
+		var dialog = await DialogService.ShowDialogAsync<ReviewDialogComp>(_reviewSession, new DialogParameters()
+		{
+			Title = "Review",
+			Width = "fit-content",
+			Height = "fit-content",
+			TrapFocus = true,
+			Modal = false
+		});
+		var result = await dialog.Result;
+
+		if (result.Data is not null && !result.Cancelled)
+		{
+			var reviewResult = (ReviewSessionVm)result.Data;
+
+			var reviews = reviewResult.Reviews.Select(r => new CreateReviewVm
+				{
+					AppUserId = UserState.UserId!,
+					FlashcardId = r.FlashcardId,
+					ReviewDate = r.ReviewDate,
+					EaseLevel = r.EaseLevel
+				});
+
+			var (response, statusCode) = await ReviewService.CreateReviewSessionAsync(reviews);
+
+			switch (statusCode)
+			{
+				case HttpStatusCode.Unauthorized:
+					var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+					await dialog401.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+				case HttpStatusCode.Forbidden:
+					var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+					await dialog403.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+			}
+
+			await JsRuntime.InvokeVoidAsync("logger.object", response);
+
+			if (response.IsSucceed)
+			{
+				ToastService.ShowSuccess("Review session saved successfully!");
+				await OnFinished.InvokeAsync();
+			}
+			else
+			{
+				ToastService.ShowError("Failed to save review session.");
+			}
+		}
+	}
+}

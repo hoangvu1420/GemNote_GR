@@ -1,8 +1,17 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Components.Authorization
+@using GemNote.Web.Services.Contracts
+@using GemNote.Web.States
+@using System.Net
+@using GemNote.Web.Components.ReiewComponents
+@using GemNote.Web.ViewModels.FlashcardViewModels
+@using Newtonsoft.Json
 
 @inject IToastService ToastService
+@inject IDialogService DialogService
 @inject NavigationManager NavigationManager
+@inject UserState UserState
+@inject IFlashcardService FlashcardService
 
 <PageTitle>Home</PageTitle>
 
@@ -31,9 +40,16 @@
 					<img class="wall-image" src="images/wall-image3.webp" alt="wall image"/>
 				</div>
 				<div class="content">
-					<FluentLabel Typo="Typography.H4">
-						Ready for some learning? Start creating your flashcards now!
-					</FluentLabel>
+					<FluentStack HorizontalAlignment="HorizontalAlignment.Center">
+						<FluentLabel Typo="Typography.H4">
+							@(_message)
+						</FluentLabel>
+						@if (_hasDueFlashcard)
+						{
+							<ReviewButton ReviewFlashcards="@(_dueReviewFlashcards)"
+							              OnFinished="@OnFinishedReview"/>
+						}
+					</FluentStack>
 				</div>
 			</Authorized>
 		</AuthorizeView>
@@ -41,5 +57,60 @@
 </FluentGrid>
 
 @code {
+	private bool _hasDueFlashcard;
+	private IEnumerable<FlashcardVm>? _dueReviewFlashcards;
+	private string _message = "You have no flashcards to review today!";
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (UserState.IsAuthenticated)
+		{
+			var userId = UserState.UserId;
+
+			var (response, statusCode) = await FlashcardService.GetDueFlashcardsByUserIdAsync(userId!);
+
+			switch (statusCode)
+			{
+				case HttpStatusCode.Unauthorized:
+					var dialog401 = await DialogService.ShowErrorAsync("You are not authorized to access this page.");
+					await dialog401.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+				case HttpStatusCode.Forbidden:
+					var dialog403 = await DialogService.ShowErrorAsync("You are not allowed to access this page.");
+					await dialog403.Result;
+					NavigationManager.NavigateTo("/");
+					break;
+				case HttpStatusCode.OK:
+					var jsonData = response.Data!.ToString();
+
+					if (!string.IsNullOrEmpty(jsonData))
+					{
+						try
+						{
+							_dueReviewFlashcards = JsonConvert.DeserializeObject<IEnumerable<FlashcardVm>>(jsonData) ?? new List<FlashcardVm>();
+						}
+						catch (JsonException ex)
+						{
+							_dueReviewFlashcards = new List<FlashcardVm>();
+						}
+
+						var dueReviewFlashcards = _dueReviewFlashcards.ToList();
+						_hasDueFlashcard = dueReviewFlashcards.Any();
+						_message = $"You have {dueReviewFlashcards.Count()} flashcards to review today!";
+					}
+
+					break;
+				case HttpStatusCode.NotFound:
+					_message = "You have no flashcards to review today!";
+					break;
+			}
+		}
+	}
+
+	private async Task OnFinishedReview()
+	{
+		await InvokeAsync(StateHasChanged);
+	}
 
 }
