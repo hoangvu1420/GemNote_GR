@@ -359,6 +359,11 @@ public partial class UnitPage : IAsyncDisposable
 		}
 	}
 
+	private async Task OnFinishedReview()
+	{
+		await InvokeAsync(StateHasChanged);
+	}
+
 	public ValueTask DisposeAsync()
 	{
 		KeyCodeService.UnregisterListener(OnKeyDownAsync);

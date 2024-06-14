@@ -1,6 +1,7 @@
 ﻿@page "/units/{UnitId}"
 
 @using GemNote.Web.Components.FlashcardComponents
+@using GemNote.Web.Components.ReiewComponents
 
 <PageTitle>Unit</PageTitle>
 
@@ -25,6 +26,10 @@
 	}
 
 	.page-content {
+		width: 100%;
+	}
+
+	.top-bar {
 		width: 100%;
 	}
 
@@ -98,9 +103,14 @@
 						<FluentLabel Typo="Typography.Body" Class="top-label" Style="font-style: italic;">
 							@(_description)
 						</FluentLabel>
-						<FluentLabel Typo="Typography.H5" Class="top-label" Style="margin-top: 1rem;">
-							@(_message)
-						</FluentLabel>
+						<FluentStack VerticalAlignment="VerticalAlignment.Center" Style="width: 100%;">
+							<FluentLabel Typo="Typography.H5" Class="top-label" Style="margin-top: 1rem;">
+								@(_message)
+							</FluentLabel>
+							<FluentSpacer/>
+							<ReviewButton ReviewFlashcards="@(_unit.Flashcards)"
+										  OnFinished="@OnFinishedReview" />
+						</FluentStack>
 					</div>
 					@if (_unit.Flashcards.Any())
 					{
