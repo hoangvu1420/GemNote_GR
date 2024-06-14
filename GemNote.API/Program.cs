@@ -35,10 +35,14 @@ await seeder.SeedNotebookAsync();
 #endregion
 
 // Configure the HTTP request pipeline.
+app.UseSwagger();
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
 	app.UseSwaggerUI();
+	app.UseCors("AllowClientWeb");
+}
+else if (app.Environment.IsProduction())
+{
 	app.UseCors("AllowClientWeb");
 }
 

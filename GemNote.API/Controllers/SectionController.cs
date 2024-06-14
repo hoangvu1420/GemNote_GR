@@ -16,7 +16,7 @@ public class SectionController(ISectionService sectionService) : ControllerBase
 {
 	private ApiResponse _response = new();
 
-	[HttpGet]
+	[HttpGet(Name = "GetSections")]
 	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -75,7 +75,7 @@ public class SectionController(ISectionService sectionService) : ControllerBase
 		}
 	}
 
-	[HttpPost]
+	[HttpPost(Name = "CreateSection")]
 	[ResourceAuthorize(typeof(Section))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -114,7 +114,7 @@ public class SectionController(ISectionService sectionService) : ControllerBase
 		}
 	}
 
-	[HttpPut("{sectionId}")]
+	[HttpPut("{sectionId}", Name = "UpdateSection")]
 	[ResourceAuthorize(typeof(Section))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -152,7 +152,7 @@ public class SectionController(ISectionService sectionService) : ControllerBase
 		}
 	}
 
-	[HttpDelete("{sectionId}")]
+	[HttpDelete("{sectionId}", Name = "DeleteSection")]
 	[ResourceAuthorize(typeof(Section))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]

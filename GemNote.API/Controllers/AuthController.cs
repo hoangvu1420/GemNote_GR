@@ -10,8 +10,7 @@ namespace GemNote.API.Controllers;
 [ApiController]
 public class AuthController(IAuthService authService) : ControllerBase
 {
-	[HttpPost]
-	[Route("register")]
+	[HttpPost("register", Name = "Register")]
 	[ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerDto)
@@ -38,8 +37,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 		return BadRequest(registerResult);
 	}
 
-	[HttpPost]
-	[Route("login")]
+	[HttpPost("login", Name = "Login")]
 	[ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(LoginResponse), StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> Login([FromBody] LoginRequestDto loginDto)
@@ -66,8 +64,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 		return BadRequest(loginResult);
 	}
 
-	[HttpPost]
-	[Route("refresh-token")]
+	[HttpPost("refresh-token", Name = "RefreshToken")]
 	[ProducesResponseType(typeof(RefreshTokenResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(RefreshTokenResponse), StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(typeof(RefreshTokenResponse), StatusCodes.Status403Forbidden)]
@@ -96,8 +93,7 @@ public class AuthController(IAuthService authService) : ControllerBase
 		return BadRequest(refreshTokenResult);
 	}
 
-	[HttpPost]
-	[Route("add-to-role")]
+	[HttpPost("add-to-role", Name = "AddToRole")]
 	[Authorize(Roles = "Admin")]
 	[ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(AuthResponse), StatusCodes.Status400BadRequest)]

@@ -6,11 +6,10 @@ namespace GemNote.API.Controllers;
 [Route("/")]
 public class RootController : ControllerBase
 {
-	[HttpGet]
+	[HttpGet(Name = "Root")]
 	public ActionResult<string> Get()
 	{
-		var message = @"Welcome to GemNote API!
-Refer to the API documentation in the link below:";
+		var message = "Welcome to GemNote API!";
 		return Ok(message);
 	}
 }

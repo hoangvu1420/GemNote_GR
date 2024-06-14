@@ -17,7 +17,7 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 {
 	private ApiResponse _response = new();
 
-	[HttpGet]
+	[HttpGet(Name = "GetNotebooks")]
 	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -80,7 +80,7 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 		}
 	}
 
-	[HttpPost]
+	[HttpPost(Name = "CreateNotebook")]
 	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -119,7 +119,7 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 		}
 	}
 
-	[HttpPut("{notebookId}")]
+	[HttpPut("{notebookId}", Name = "UpdateNotebook")]
 	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -157,7 +157,7 @@ public class NotebookController(INotebookService notebookService) : ControllerBa
 		}
 	}
 
-	[HttpDelete("{notebookId}")]
+	[HttpDelete("{notebookId}", Name = "DeleteNotebook")]
 	[ResourceAuthorize(typeof(Notebook))] // Custom filter to authorize access to resources
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
