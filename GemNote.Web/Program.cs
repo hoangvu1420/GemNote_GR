@@ -21,9 +21,11 @@ public class Program
 
 		builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 		builder.Services.AddTransient<AuthenticationMessageHandler>();
+		
+		var apiBaseUri = builder.HostEnvironment.IsDevelopment() ? ApiUri.DevelopmentUri : ApiUri.ProductionUri;
 		builder.Services.AddHttpClient("ServerApi", client =>
 		{
-			client.BaseAddress = new Uri(ApiUri.DevelopmentUri);
+			client.BaseAddress = new Uri(apiBaseUri);
 		}).AddHttpMessageHandler<AuthenticationMessageHandler>();
 
 		builder.Services.AddFluentUIComponents();
