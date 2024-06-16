@@ -23,6 +23,7 @@ public class Program
 		builder.Services.AddTransient<AuthenticationMessageHandler>();
 		
 		var apiBaseUri = builder.HostEnvironment.IsDevelopment() ? ApiUri.DevelopmentUri : ApiUri.ProductionUri;
+		// var apiBaseUri = ApiUri.ProductionUri;
 		builder.Services.AddHttpClient("ServerApi", client =>
 		{
 			client.BaseAddress = new Uri(apiBaseUri);

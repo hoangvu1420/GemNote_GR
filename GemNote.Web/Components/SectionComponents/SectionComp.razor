@@ -129,7 +129,7 @@
 </div>
 
 @code {
-	[Parameter] public SectionVm Section { get; set; }
+	[Parameter] public SectionVm Section { get; set; } = null!;
 	[Parameter] public EventCallback<SectionVm> OnEdit { get; set; }
 	[Parameter] public EventCallback<SectionVm> OnDelete { get; set; }
 

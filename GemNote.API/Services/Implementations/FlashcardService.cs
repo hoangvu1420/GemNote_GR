@@ -113,7 +113,7 @@ public class FlashcardService(
 			// Get all reviews for the user
 			var reviews = await reviewRepository.GetAllAsync(
 				filter: r => r.AppUserId == userId,
-				includeProperties: "Flashcard"
+				includeProperties: "Flashcard, Flashcard.Unit"
 			);
 
 			// Group by FlashcardId and select the review with the latest ReviewDate for each group
