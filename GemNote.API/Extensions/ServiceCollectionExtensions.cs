@@ -117,11 +117,22 @@ public static class ServiceCollectionExtensions
 		});
 		services.AddCors(options =>
 		{
-			options.AddPolicy("AllowClientWeb",
+			options.AddPolicy("AllowClientWebLocal",
 				builder =>
 				{
 					builder
 						.WithOrigins("https://localhost:7013", "http://localhost:7013")
+						.AllowAnyMethod()
+						.AllowAnyHeader();
+				});
+		});
+		services.AddCors(options =>
+		{
+			options.AddPolicy("AllowClientWeb",
+				builder =>
+				{
+					builder
+						.WithOrigins("https://calm-forest-0a05e8b00-preview.eastasia.5.azurestaticapps.net", "https://localhost:7013")
 						.AllowAnyMethod()
 						.AllowAnyHeader();
 				});
