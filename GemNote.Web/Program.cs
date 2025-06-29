@@ -3,7 +3,6 @@ using GemNote.Web.Authentication;
 using GemNote.Web.Services.Contracts;
 using GemNote.Web.Services.Implementations;
 using GemNote.Web.States;
-using GemNote.Web.StaticDetails;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -22,11 +21,9 @@ public class Program
 		builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 		builder.Services.AddTransient<AuthenticationMessageHandler>();
 		
-		var apiBaseUri = builder.HostEnvironment.IsDevelopment() ? ApiUri.DevelopmentUri : ApiUri.ProductionUri;
-		// var apiBaseUri = ApiUri.ProductionUri;
 		builder.Services.AddHttpClient("ServerApi", client =>
 		{
-			client.BaseAddress = new Uri(apiBaseUri);
+			client.BaseAddress = new Uri("https://localhost:7214");
 		}).AddHttpMessageHandler<AuthenticationMessageHandler>();
 
 		builder.Services.AddFluentUIComponents();

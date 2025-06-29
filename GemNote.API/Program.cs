@@ -1,8 +1,12 @@
 using GemNote.API.Extensions;
+using GemNote.API.Infrastructure.DataContext;
 using GemNote.API.Services.Contracts;
 using Microsoft.Net.Http.Headers;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddServices();
@@ -22,9 +26,28 @@ builder.Services.AddCorsConfig();
 
 var app = builder.Build();
 
-#region Seeding data
+app.MapDefaultEndpoints();
 
 var scope = app.Services.CreateScope();
+
+// Configure the HTTP request pipeline.
+app.UseSwagger();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerUI();
+    app.UseCors("AllowClientWebLocal");
+
+    // Apply database migrations
+    var dbContext = scope.ServiceProvider.GetRequiredService<GemNoteDbContext>();
+    dbContext.Database.Migrate();
+}
+else if (app.Environment.IsProduction())
+{
+	app.UseCors("AllowClientWeb");
+}
+
+#region Seeding data
+
 var seeder = scope.ServiceProvider.GetRequiredService<ISeeder>();
 
 await seeder.SeedRolesAsync();
@@ -33,18 +56,6 @@ await seeder.SeedCategoriesAsync();
 await seeder.SeedNotebookAsync();
 
 #endregion
-
-// Configure the HTTP request pipeline.
-app.UseSwagger();
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwaggerUI();
-	app.UseCors("AllowClientWebLocal");
-}
-else if (app.Environment.IsProduction())
-{
-	app.UseCors("AllowClientWeb");
-}
 
 app.UseHttpsRedirection();
 

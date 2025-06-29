@@ -1,28 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
-  <Class Name="GemNote.API.Controllers.AuthController" Collapsed="true">
-    <Position X="6" Y="10.5" Width="1.5" />
+  <Class Name="GemNote.API.Controllers.AuthController">
+    <Position X="2.75" Y="12" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAABAAAAAAIQAAAAAAA=</HashCode>
       <FileName>Controllers\AuthController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Controllers.NotebookController" Collapsed="true">
-    <Position X="8.5" Y="10.5" Width="1.75" />
+  <Class Name="GemNote.API.Controllers.NotebookController">
+    <Position X="6.5" Y="12" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAACAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAIAAAAgAACAAAACAAAAAAAAAAECAAAAAAAAAAAA=</HashCode>
       <FileName>Controllers\NotebookController.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Controllers.RootController" Collapsed="true">
-    <Position X="6" Y="11.5" Width="1.5" />
+  <Class Name="GemNote.API.Controllers.RootController">
+    <Position X="2.75" Y="14.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Controllers\RootController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="GemNote.API.CustomFilters.ResourceAuthorizationFilter&lt;T&gt;" Collapsed="true">
-    <Position X="12.25" Y="16.75" Width="2.75" />
+    <Position X="21.25" Y="19.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAEE=</HashCode>
       <FileName>CustomFilters\ResourceAuthorizationFilter.cs</FileName>
@@ -30,215 +30,191 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="GemNote.API.CustomFilters.ResourceAuthorizeAttribute" Collapsed="true">
-    <Position X="15.5" Y="16.75" Width="2.5" />
+    <Position X="24.5" Y="19.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>CustomFilters\ResourceAuthorizeAttribute.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.AppUser" Collapsed="true">
-    <Position X="10.5" Y="5.5" Width="1.5" />
+  <Class Name="GemNote.API.Models.AppUser">
+    <Position X="8.5" Y="7.25" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAAAEAACAAAAIEIABAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>Models\AppUser.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.BaseEntity" Collapsed="true">
-    <Position X="10.75" Y="2" Width="1.5" />
+  <Class Name="GemNote.API.Models.BaseEntity">
+    <Position X="7.75" Y="2" Width="2" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAACAAAACAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\BaseEntity.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.CardReviewSession" Collapsed="true">
-    <Position X="12.75" Y="5.5" Width="1.75" />
+  <Class Name="GemNote.API.Models.CardReviewSession">
+    <Position X="13" Y="7.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAgAAAAEAAIIAQAAEBAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\CardReviewSession.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.Category" Collapsed="true">
-    <Position X="6" Y="3.75" Width="1.5" />
+  <Class Name="GemNote.API.Models.Category">
+    <Position X="1.25" Y="4.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAAEAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Category.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.Flashcard" Collapsed="true">
-    <Position X="8.25" Y="3.75" Width="1.5" />
+  <Class Name="GemNote.API.Models.Flashcard">
+    <Position X="5.25" Y="4.25" Width="4" />
     <TypeIdentifier>
       <HashCode>AQAAEAAAAEAAAAgAIJAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
       <FileName>Models\Flashcard.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.Notebook" Collapsed="true">
-    <Position X="12.75" Y="3.75" Width="1.5" />
+  <Class Name="GemNote.API.Models.Notebook">
+    <Position X="13.25" Y="4.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAgAAAAAEAAYAAAAAAAAAAEAAAAAACAA=</HashCode>
       <FileName>Models\Notebook.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.RefreshToken" Collapsed="true">
-    <Position X="8.25" Y="5.5" Width="1.5" />
+  <Class Name="GemNote.API.Models.RefreshToken">
+    <Position X="5.75" Y="7.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAGAAAAAAAgAAAAAAAAAAgAAAAAAAAAAAAAAAABAAA=</HashCode>
       <FileName>Models\RefreshToken.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.Section" Collapsed="true">
-    <Position X="10.5" Y="3.75" Width="1.5" />
+  <Class Name="GemNote.API.Models.Section">
+    <Position X="10" Y="4.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAAEAAAAAAAQAAAAAAAAAEAAAAAAAEAA=</HashCode>
       <FileName>Models\Section.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Models.Unit" Collapsed="true">
-    <Position X="15" Y="3.75" Width="1.5" />
+  <Class Name="GemNote.API.Models.Unit">
+    <Position X="17" Y="4.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAAAAAAAAAAQAAAAAAACAAAAAAIAQAAA=</HashCode>
       <FileName>Models\Unit.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Infrastructure.DataContext.GemNoteDbContext" Collapsed="true">
-    <Position X="6" Y="5.5" Width="2" />
+  <Class Name="GemNote.API.Infrastructure.DataContext.GemNoteDbContext">
+    <Position X="1.5" Y="7.25" Width="3.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAIAAAEAABAQAAAAEAAAEACAEEAAAAAAAAA=</HashCode>
       <FileName>Infrastructure\DataContext\GemNoteDbContext.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.AuthDtos.AddToRoleDto" Collapsed="true">
-    <Position X="24.5" Y="3.25" Width="1.5" />
+  <Class Name="GemNote.API.DTOs.AuthDtos.AddToRoleDto">
+    <Position X="40.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\AuthDtos\AddToRoleDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.AuthDtos.AuthResponse" Collapsed="true">
-    <Position X="21.5" Y="4.5" Width="1.5" />
+  <Class Name="GemNote.API.DTOs.AuthDtos.AuthResponse">
+    <Position X="37.75" Y="7.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAEAA=</HashCode>
       <FileName>DTOs\AuthDtos\AuthResponse.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.AuthDtos.LoginRequestDto" Collapsed="true">
-    <Position X="19.25" Y="2.25" Width="1.75" />
+  <Class Name="GemNote.API.DTOs.AuthDtos.LoginRequestDto">
+    <Position X="35" Y="1.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\AuthDtos\LoginRequestDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.AuthDtos.LoginResponse" Collapsed="true">
-    <Position X="19.25" Y="3.25" Width="1.5" />
+  <Class Name="GemNote.API.DTOs.AuthDtos.LoginResponse">
+    <Position X="35" Y="3.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAASAAAAAAAAAAAAAAAQAAAABAAAAAAAAABEAA=</HashCode>
       <FileName>DTOs\AuthDtos\LoginResponse.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.AuthDtos.RefreshTokenRequestDto" Collapsed="true">
-    <Position X="21.5" Y="2.25" Width="2.25" />
+  <Class Name="GemNote.API.DTOs.AuthDtos.RefreshTokenRequestDto">
+    <Position X="37.75" Y="1.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\AuthDtos\RefreshTokenRequestDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.AuthDtos.RefreshTokenResponse" Collapsed="true">
-    <Position X="21.5" Y="3.25" Width="2" />
+  <Class Name="GemNote.API.DTOs.AuthDtos.RefreshTokenResponse">
+    <Position X="37.75" Y="4.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAASAAAAAAAAAAAAAAAQAAAAAAAAAAAAAABEAA=</HashCode>
       <FileName>DTOs\AuthDtos\RefreshTokenResponse.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.AuthDtos.RegisterRequestDto" Collapsed="true">
-    <Position X="24.5" Y="2.25" Width="1.75" />
+  <Class Name="GemNote.API.DTOs.AuthDtos.RegisterRequestDto">
+    <Position X="40.75" Y="1.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAEAACCAAAAAIAAAAAAAAAAAAAAACAAAAAAAAAAg=</HashCode>
       <FileName>DTOs\AuthDtos\RegisterRequestDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.AuthDtos.UserDto" Collapsed="true">
-    <Position X="19.25" Y="4.5" Width="1.5" />
+  <Class Name="GemNote.API.DTOs.AuthDtos.UserDto">
+    <Position X="35" Y="6.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAACAEAACCAAAAAIAAAAAAAAAgAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>DTOs\AuthDtos\UserDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.NotebookDtos.CreateNotebookDto" Collapsed="true">
-    <Position X="27.75" Y="4.25" Width="1.75" />
+  <Class Name="GemNote.API.DTOs.NotebookDtos.CreateNotebookDto">
+    <Position X="44" Y="7.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAgAAAAAAAEAAQAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>AAAAAAAAAAAgAAAAAAAEAAQAACAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\NotebookDtos\CreateNotebookDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.NotebookDtos.NotebookDto" Collapsed="true">
-    <Position X="27.75" Y="2.25" Width="1.5" />
+  <Class Name="GemNote.API.DTOs.NotebookDtos.NotebookDto">
+    <Position X="44" Y="1.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAgAAAAACAMAAQAAAAAAAAAAAAAAAAACAA=</HashCode>
       <FileName>DTOs\NotebookDtos\NotebookDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.NotebookDtos.NotebooksProfile" Collapsed="true">
-    <Position X="30.5" Y="2.25" Width="1.75" />
+  <Class Name="GemNote.API.DTOs.NotebookDtos.NotebooksProfile">
+    <Position X="46.75" Y="1.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\NotebookDtos\NotebooksProfile.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.NotebookDtos.UpdateNotebookDto" Collapsed="true">
-    <Position X="27.75" Y="3.25" Width="2" />
+  <Class Name="GemNote.API.DTOs.NotebookDtos.UpdateNotebookDto">
+    <Position X="44" Y="4.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAgAAAAAAAEAAQAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <HashCode>AAACAAAAAAAgAAAAAAAAAAQAACAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\NotebookDtos\UpdateNotebookDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.DTOs.ApiResponse" Collapsed="true">
-    <Position X="24.5" Y="6.5" Width="1.5" />
+  <Class Name="GemNote.API.DTOs.ApiResponse">
+    <Position X="40.75" Y="7.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAEAA=</HashCode>
       <FileName>DTOs\ApiResponse.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GemNote.API.Repositories.Implementations.NotebookRepository" Collapsed="true">
-    <Position X="20.25" Y="12" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Repositories\Implementations\NotebookRepository.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="GemNote.API.Repositories.Implementations.Repository&lt;T&gt;" Collapsed="true">
-    <Position X="22.75" Y="10.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAEBAIAAAAAAAAAAAAAAAAAAAIAIAAAAAAAAIIAAAIA=</HashCode>
-      <FileName>Repositories\Implementations\Repository.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="PetCareSystem.Repositories.Implementations.RefreshTokenRepository" Collapsed="true">
-    <Position X="26.75" Y="12.25" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAgAAAAAAAA=</HashCode>
-      <FileName>Repositories\Implementations\RefreshTokenRepository.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="GemNote.API.Services.Implementations.AuthService" Collapsed="true">
-    <Position X="15.5" Y="10.5" Width="1.5" />
+  <Class Name="GemNote.API.Services.Implementations.AuthService">
+    <Position X="22.75" Y="25.75" Width="4.25" />
     <TypeIdentifier>
       <HashCode>AkAAAAAAAAAAAEAAAAAIAAAAAAAAAAAgAAAAAACACAA=</HashCode>
       <FileName>Services\Implementations\AuthService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="GemNote.API.Services.Implementations.NotebookService" Collapsed="true">
-    <Position X="15.5" Y="12.5" Width="1.75" />
+  <Class Name="GemNote.API.Services.Implementations.NotebookService">
+    <Position X="17.5" Y="26" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAAAgAAAAAAACCAAAAAAAACACAAAAAAAAAAAA=</HashCode>
       <FileName>Services\Implementations\NotebookService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="GemNote.API.Services.Implementations.Seeder" Collapsed="true">
-    <Position X="15.5" Y="13.5" Width="1.5" />
+  <Class Name="GemNote.API.Services.Implementations.Seeder">
+    <Position X="29.25" Y="25.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAIAAA=</HashCode>
       <FileName>Services\Implementations\Seeder.cs</FileName>
@@ -246,66 +222,365 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="GemNote.API.StaticDetails.PictureStock" Collapsed="true">
-    <Position X="12.25" Y="18" Width="1.5" />
+    <Position X="21.25" Y="20.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>StaticDetails\PictureStock.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="GemNote.API.StaticDetails.UserRoles" Collapsed="true">
-    <Position X="16" Y="18" Width="1.5" />
+    <Position X="25" Y="20.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>StaticDetails\UserRoles.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Struct Name="GemNote.API.Services.Implementations.Token" Collapsed="true">
-    <Position X="15.5" Y="11.5" Width="1.5" />
+  <Class Name="GemNote.API.Controllers.FlashcardController">
+    <Position X="6.5" Y="18" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAACAAAQAAAAAIAAAAAAAAAAAAAgAAgAI=</HashCode>
+      <FileName>Controllers\FlashcardController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.Controllers.ReviewSessionController">
+    <Position X="11.5" Y="15.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAgACAACAAAAAAAGAAAAAAAAAKAAAAAAAA=</HashCode>
+      <FileName>Controllers\ReviewSessionController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.Controllers.SectionController">
+    <Position X="11.5" Y="12" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAgAAAgAAAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Controllers\SectionController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.Controllers.UnitController">
+    <Position X="6.5" Y="15" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAKAAAAAAAAACAAAAAAAAIIAAAIAAAAA=</HashCode>
+      <FileName>Controllers\UnitController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.FlashcardDtos.CreateFlashcardDto">
+    <Position X="22" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AQAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>DTOs\FlashcardDtos\CreateFlashcardDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.FlashcardDtos.FlashcardDto">
+    <Position X="25.75" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AQACEAAAAEAAAAgAAIAAAAAAAAAAAIAAAAAEAAAAAAA=</HashCode>
+      <FileName>DTOs\FlashcardDtos\FlashcardDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.FlashcardDtos.FlashcardProfile">
+    <Position X="28.5" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\FlashcardDtos\FlashcardProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.FlashcardDtos.UpdateFlashcardDto">
+    <Position X="25.75" Y="9" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AQACEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\FlashcardDtos\UpdateFlashcardDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.ReviewDtos.CreateReviewDto">
+    <Position X="25.75" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAAEAAAIAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\ReviewDtos\CreateReviewDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.ReviewDtos.ReviewDto">
+    <Position X="31.75" Y="3.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAgAAAAEAAAIAAAAEBAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\ReviewDtos\ReviewDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.ReviewDtos.ReviewProfile">
+    <Position X="22" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\ReviewDtos\ReviewProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.SectionDtos.CreateSectionDto">
+    <Position X="28.5" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>DTOs\SectionDtos\CreateSectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.SectionDtos.SectionDto">
+    <Position X="25.75" Y="6.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAACAAAAQAAIAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\SectionDtos\SectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.SectionDtos.SectionProfile">
+    <Position X="28.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\SectionDtos\SectionProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.SectionDtos.UpdateSectionDto">
+    <Position X="28.5" Y="9" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\SectionDtos\UpdateSectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.UnitDtos.CreateUnitDto">
+    <Position X="31.75" Y="1.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>DTOs\UnitDtos\CreateUnitDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.UnitDtos.DetailedUnitDto">
+    <Position X="22" Y="3.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgCAAAAAAAAAQAAAAAAACEEAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\UnitDtos\DetailedUnitDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.UnitDtos.UnitDto">
+    <Position X="31.75" Y="6.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAAAAAQAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\UnitDtos\UnitDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.UnitDtos.UnitProfile">
+    <Position X="22" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\UnitDtos\UnitProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.DTOs.UnitDtos.UpdateUnitDto">
+    <Position X="31.75" Y="9" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\UnitDtos\UpdateUnitDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GemNote.API.Services.Implementations.FlashcardService" BaseTypeListCollapsed="true">
+    <Position X="28.75" Y="32.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAQAABAAIAAAAAAAAAAAAAgAAgAI=</HashCode>
+      <FileName>Services\Implementations\FlashcardService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GemNote.API.Services.Implementations.ReviewService" BaseTypeListCollapsed="true">
+    <Position X="34" Y="29.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAiAAAAAAEAAgAAAAAAAGAAAAABAA=</HashCode>
+      <FileName>Services\Implementations\ReviewService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GemNote.API.Services.Implementations.SectionService" BaseTypeListCollapsed="true">
+    <Position X="17.5" Y="32" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAIAAAAAAACAAgBAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Implementations\SectionService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GemNote.API.Services.Implementations.UnitService" BaseTypeListCollapsed="true">
+    <Position X="22.75" Y="32" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAIAAAAAAAAACAAAAAAAAIIAAAIAAAAA=</HashCode>
+      <FileName>Services\Implementations\UnitService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GemNote.API.Repositories.Implementations.CategoryRepository">
+    <Position X="41.5" Y="17.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Implementations\CategoryRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GemNote.API.Repositories.Implementations.FlashcardRepository">
+    <Position X="47" Y="17.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Implementations\FlashcardRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GemNote.API.Repositories.Implementations.NotebookRepository">
+    <Position X="55.5" Y="17.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Implementations\NotebookRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GemNote.API.Repositories.Implementations.Repository&lt;T&gt;">
+    <Position X="47.75" Y="12.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAEBAIAAAAAAAAAAAAAAAAAAAIAIAAAAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\Implementations\Repository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GemNote.API.Repositories.Implementations.ReviewRepository">
+    <Position X="43.75" Y="17.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAABAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Implementations\ReviewRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GemNote.API.Repositories.Implementations.SectionRepository">
+    <Position X="50.25" Y="17.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABgAAAgAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Implementations\SectionRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GemNote.API.Repositories.Implementations.UnitRepository">
+    <Position X="53" Y="13.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Implementations\UnitRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PetCareSystem.Repositories.Implementations.RefreshTokenRepository">
+    <Position X="43.25" Y="13.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Repositories\Implementations\RefreshTokenRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="GemNote.API.Services.Implementations.Token">
+    <Position X="34" Y="23.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\Implementations\AuthService.cs</FileName>
     </TypeIdentifier>
   </Struct>
-  <Interface Name="GemNote.API.Repositories.Contracts.INotebookRepository" Collapsed="true">
-    <Position X="19.5" Y="15.25" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Repositories\Contracts\INotebookRepository.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="GemNote.API.Repositories.Contracts.IRefreshTokenRepository" Collapsed="true">
-    <Position X="26.5" Y="15.5" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
-      <FileName>Repositories\Contracts\IRefreshTokenRepository.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="GemNote.API.Repositories.Contracts.IRepository&lt;T&gt;" Collapsed="true">
-    <Position X="22.75" Y="13.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAEAAIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAIIAAAIA=</HashCode>
-      <FileName>Repositories\Contracts\IRepository.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="GemNote.API.Services.Contracts.IAuthService" Collapsed="true">
-    <Position X="13" Y="10.5" Width="1.5" />
+  <Interface Name="GemNote.API.Services.Contracts.IAuthService">
+    <Position X="22.75" Y="23.25" Width="4.25" />
     <TypeIdentifier>
       <HashCode>AkAAAAAAAAAAAEAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
       <FileName>Services\Contracts\IAuthService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="GemNote.API.Services.Contracts.INotebookService" Collapsed="true">
-    <Position X="13" Y="12.5" Width="1.75" />
+  <Interface Name="GemNote.API.Services.Contracts.INotebookService">
+    <Position X="17.5" Y="23.25" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAAAgAAAAAAACCAAAAAAAACACAAAAAAAAAAAA=</HashCode>
       <FileName>Services\Contracts\INotebookService.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="GemNote.API.Services.Contracts.ISeeder" Collapsed="true">
-    <Position X="13" Y="13.5" Width="1.5" />
+  <Interface Name="GemNote.API.Services.Contracts.ISeeder">
+    <Position X="29.25" Y="23.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAIAAA=</HashCode>
       <FileName>Services\Contracts\ISeeder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Services.Contracts.IFlashcardService">
+    <Position X="28.75" Y="29.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAQAABAAIAAAAAAAAAAAAAgAAgAI=</HashCode>
+      <FileName>Services\Contracts\IFlashcardService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Services.Contracts.IReviewService">
+    <Position X="34" Y="26.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAiAAAAAAEAAgAAAAAAACAAAAABAA=</HashCode>
+      <FileName>Services\Contracts\IReviewService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Services.Contracts.ISectionService">
+    <Position X="17.5" Y="29.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAIAAAAAAACAAgBAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Contracts\ISectionService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Services.Contracts.IUnitService">
+    <Position X="22.75" Y="29.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAIAAAAAAAAACAAAAAAAAIIAAAIAAAAA=</HashCode>
+      <FileName>Services\Contracts\IUnitService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Repositories.Contracts.ICategoryRepository">
+    <Position X="42" Y="24.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Contracts\ICategoryRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Repositories.Contracts.IFlashcardRepository">
+    <Position X="44.75" Y="24.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Contracts\IFlashcardRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Repositories.Contracts.INotebookRepository">
+    <Position X="51.75" Y="24.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Contracts\INotebookRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Repositories.Contracts.IRefreshTokenRepository">
+    <Position X="43.5" Y="21" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Repositories\Contracts\IRefreshTokenRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Repositories.Contracts.IRepository&lt;T&gt;">
+    <Position X="47.75" Y="20.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\Contracts\IRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Repositories.Contracts.IReviewRepository">
+    <Position X="48.5" Y="24.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Contracts\IReviewRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Repositories.Contracts.ISectionRepository">
+    <Position X="55" Y="24.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Contracts\ISectionRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GemNote.API.Repositories.Contracts.IUnitRepository">
+    <Position X="52.25" Y="21" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Contracts\IUnitRepository.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="10" />

@@ -21,7 +21,10 @@ public static class ServiceCollectionExtensions
 		// Add DbContext
 		services.AddDbContext<GemNoteDbContext>(option =>
 		{
-			option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+			option.UseSqlServer(configuration.GetConnectionString("sql"), sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure();
+            });
 		});
 
 		// Add Identity
@@ -132,7 +135,7 @@ public static class ServiceCollectionExtensions
 				builder =>
 				{
 					builder
-						.WithOrigins("https://calm-forest-0a05e8b00-preview.eastasia.5.azurestaticapps.net", "https://localhost:7013")
+						.WithOrigins("https://gemnote-web.web.app", "https://localhost:7013")
 						.AllowAnyMethod()
 						.AllowAnyHeader();
 				});
