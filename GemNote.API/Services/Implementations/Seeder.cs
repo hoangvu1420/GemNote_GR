@@ -5,19 +5,27 @@ using GemNote.API.Services.Contracts;
 using GemNote.API.StaticDetails;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace GemNote.API.Services.Implementations;
 
-public class Seeder(GemNoteDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager)
+public class Seeder(GemNoteDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<AppUser> userManager, ILogger<Seeder> logger)
 	: ISeeder
 {
 	public async Task SeedRolesAsync()
 	{
+		logger.LogInformation("Attempting to seed roles...");
 		if (!await dbContext.Database.CanConnectAsync())
+		{
+			logger.LogWarning("Database connection not available. Skipping role seeding.");
 			return;
+		}
 
 		if (await dbContext.Roles.AnyAsync())
+		{
+			logger.LogInformation("Roles already exist. Skipping role seeding.");
 			return;
+		}
 
 		var roles = new List<string>
 		{
@@ -25,17 +33,33 @@ public class Seeder(GemNoteDbContext dbContext, RoleManager<IdentityRole> roleMa
 		};
 		foreach (var role in roles)
 		{
-			await roleManager.CreateAsync(new IdentityRole(role));
+			var result = await roleManager.CreateAsync(new IdentityRole(role));
+			if (result.Succeeded)
+			{
+				logger.LogInformation("Role '{RoleName}' created successfully.", role);
+			}
+			else
+			{
+				logger.LogError("Failed to create role '{RoleName}': {Errors}", role, string.Join(", ", result.Errors.Select(e => e.Description)));
+			}
 		}
+		logger.LogInformation("Role seeding completed.");
 	}
 
 	public async Task SeedUsersAsync()
 	{
+		logger.LogInformation("Attempting to seed users...");
 		if (!await dbContext.Database.CanConnectAsync())
+		{
+			logger.LogWarning("Database connection not available. Skipping user seeding.");
 			return;
+		}
 
 		if (await dbContext.Users.AnyAsync())
+		{
+			logger.LogInformation("Users already exist. Skipping user seeding.");
 			return;
+		}
 
 		var admin = new AppUser
 		{
@@ -48,8 +72,24 @@ public class Seeder(GemNoteDbContext dbContext, RoleManager<IdentityRole> roleMa
 		};
 
 		const string adminPassword = "admin111";
-		await userManager.CreateAsync(admin, adminPassword);
-		await userManager.AddToRoleAsync(admin, UserRoles.Admin);
+		var adminResult = await userManager.CreateAsync(admin, adminPassword);
+		if (adminResult.Succeeded)
+		{
+			logger.LogInformation("Admin user '{UserName}' created successfully.", admin.UserName);
+			var addRoleResult = await userManager.AddToRoleAsync(admin, UserRoles.Admin);
+			if (addRoleResult.Succeeded)
+			{
+				logger.LogInformation("Admin user '{UserName}' added to role '{RoleName}' successfully.", admin.UserName, UserRoles.Admin);
+			}
+			else
+			{
+				logger.LogError("Failed to add admin user '{UserName}' to role '{RoleName}': {Errors}", admin.UserName, UserRoles.Admin, string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+			}
+		}
+		else
+		{
+			logger.LogError("Failed to create admin user '{UserName}': {Errors}", admin.UserName, string.Join(", ", adminResult.Errors.Select(e => e.Description)));
+		}
 
 		var user = new AppUser
 		{
@@ -62,17 +102,41 @@ public class Seeder(GemNoteDbContext dbContext, RoleManager<IdentityRole> roleMa
 		};
 
 		const string userPassword = "user1111";
-		await userManager.CreateAsync(user, userPassword);
-		await userManager.AddToRoleAsync(user, UserRoles.User);
+		var userResult = await userManager.CreateAsync(user, userPassword);
+		if (userResult.Succeeded)
+		{
+			logger.LogInformation("Regular user '{UserName}' created successfully.", user.UserName);
+			var addRoleResult = await userManager.AddToRoleAsync(user, UserRoles.User);
+			if (addRoleResult.Succeeded)
+			{
+				logger.LogInformation("Regular user '{UserName}' added to role '{RoleName}' successfully.", user.UserName, UserRoles.User);
+			}
+			else
+			{
+				logger.LogError("Failed to add regular user '{UserName}' to role '{RoleName}': {Errors}", user.UserName, UserRoles.User, string.Join(", ", addRoleResult.Errors.Select(e => e.Description)));
+			}
+		}
+		else
+		{
+			logger.LogError("Failed to create regular user '{UserName}': {Errors}", user.UserName, string.Join(", ", userResult.Errors.Select(e => e.Description)));
+		}
+		logger.LogInformation("User seeding completed.");
 	}
 
 	public async Task SeedCategoriesAsync()
 	{
+		logger.LogInformation("Attempting to seed categories...");
 		if (!await dbContext.Database.CanConnectAsync())
+		{
+			logger.LogWarning("Database connection not available. Skipping category seeding.");
 			return;
+		}
 
 		if (await dbContext.Categories.AnyAsync())
+		{
+			logger.LogInformation("Categories already exist. Skipping category seeding.");
 			return;
+		}
 
 		var categories = new List<Category>
 		{
@@ -92,17 +156,30 @@ public class Seeder(GemNoteDbContext dbContext, RoleManager<IdentityRole> roleMa
 
 		await dbContext.Categories.AddRangeAsync(categories);
 		await dbContext.SaveChangesAsync();
+		logger.LogInformation("Categories seeded successfully.");
 	}
 
 	public async Task SeedNotebookAsync()
 	{
+		logger.LogInformation("Attempting to seed notebooks...");
 		if (!await dbContext.Database.CanConnectAsync())
+		{
+			logger.LogWarning("Database connection not available. Skipping notebook seeding.");
 			return;
+		}
 
 		if (await dbContext.Notebooks.AnyAsync())
+		{
+			logger.LogInformation("Notebooks already exist. Skipping notebook seeding.");
 			return;
+		}
 
 		var user = await userManager.FindByEmailAsync("user1@example.com");
+		if (user == null)
+		{
+			logger.LogError("User 'user1@example.com' not found. Cannot seed notebooks.");
+			return;
+		}
 
 		var notebooks = new List<Notebook>
 		{
@@ -126,5 +203,6 @@ public class Seeder(GemNoteDbContext dbContext, RoleManager<IdentityRole> roleMa
 
 		await dbContext.Notebooks.AddRangeAsync(notebooks);
 		await dbContext.SaveChangesAsync();
+		logger.LogInformation("Notebooks seeded successfully.");
 	}
 }

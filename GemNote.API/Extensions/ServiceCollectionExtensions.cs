@@ -21,7 +21,10 @@ public static class ServiceCollectionExtensions
 		// Add DbContext
 		services.AddDbContext<GemNoteDbContext>(option =>
 		{
-			option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+			option.UseSqlServer(configuration.GetConnectionString("sql"), sqlServerOptionsAction: sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure();
+            });
 		});
 
 		// Add Identity
@@ -117,11 +120,22 @@ public static class ServiceCollectionExtensions
 		});
 		services.AddCors(options =>
 		{
-			options.AddPolicy("AllowClientWeb",
+			options.AddPolicy("AllowClientWebLocal",
 				builder =>
 				{
 					builder
 						.WithOrigins("https://localhost:7013", "http://localhost:7013")
+						.AllowAnyMethod()
+						.AllowAnyHeader();
+				});
+		});
+		services.AddCors(options =>
+		{
+			options.AddPolicy("AllowClientWeb",
+				builder =>
+				{
+					builder
+						.WithOrigins("https://gemnote-web.web.app", "https://localhost:7013")
 						.AllowAnyMethod()
 						.AllowAnyHeader();
 				});
